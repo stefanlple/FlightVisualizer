@@ -1,8 +1,7 @@
 import * as THREE from "three";
-import * as TWEEN from "tween";
+//import * as TWEEN from "tween";
 
 // Own modules
-import Physics from "./physics/Physics.js";
 
 // Event functions
 import { updateAspectRatio } from "./eventfunctions/updateAspectRatio.js";
@@ -13,12 +12,10 @@ import {
   keyUpAction,
 } from "./eventfunctions/executeKeyAction.js";
 
-import Camera from "./experience/Camera.js";
-
 function main() {
+  console.log("fds");
   window.scene = new THREE.Scene();
   window.scene.add(new THREE.AxesHelper(200));
-
   window.renderer = new THREE.WebGLRenderer({ antialias: true });
   window.renderer.setSize(window.innerWidth, window.innerHeight);
   window.renderer.setClearColor();
