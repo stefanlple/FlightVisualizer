@@ -29,6 +29,11 @@ function main() {
   window.renderer.setSize(window.innerWidth, window.innerHeight);
   window.renderer.setClearColor(0xffffff);
 
+  const backgroundImage = new THREE.TextureLoader().load(
+    "./images/Water_SpecularMap_Earth.png"
+  );
+  window.scene.background = backgroundImage;
+
   document.getElementById("3d_content").appendChild(window.renderer.domElement);
 
   function mainLoop() {
