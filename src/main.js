@@ -46,7 +46,7 @@ function main() {
   window.scene.add(ambientLight);
 
   const globeRadius = 100;
-  const globeGeometry = new THREE.SphereGeometry(globeRadius, 32);
+  const globeGeometry = new THREE.SphereGeometry(globeRadius, 32, 32);
   const globeMaterial = new THREE.MeshPhongMaterial({
     color: 0xffffff,
     map: new THREE.TextureLoader().load("./src/images/No_Cloud_Earth_Map.jpg"),
@@ -63,9 +63,10 @@ function main() {
   window.scene.add(globe);
 
   const clouds = new THREE.Mesh(
-    new THREE.SphereGeometry(globeRadius + 0.003, 32),
+    new THREE.SphereGeometry(globeRadius + 0.01, 32, 32),
     new THREE.MeshPhongMaterial({
       map: new THREE.TextureLoader().load("./src/images/Clouds_Map_Earth.png"),
+      transparent: true,
     })
   );
   window.scene.add(clouds);
