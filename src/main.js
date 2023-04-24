@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 //import * as TWEEN from "tween";
 
 // Own modules
@@ -27,12 +28,22 @@ function main() {
 
   window.renderer = new THREE.WebGLRenderer({ antialias: true });
   window.renderer.setSize(window.innerWidth, window.innerHeight);
-  window.renderer.setClearColor(0xffffff);
+  window.renderer.setClearColor();
+
+  const orbitControls = new OrbitControls(
+    window.camera,
+    window.renderer.domElement
+  );
+  orbitControls.update();
 
   const backgroundImage = new THREE.TextureLoader().load(
-    "./images/Stars_Env.png"
+    "./src/images/Stars_Env.png"
   );
   window.scene.background = backgroundImage;
+
+  let ambientLight = new THREE.AmbientLight(0xffffff);
+  ambientLight.intensity = 0.5;
+  window.scene.add(ambientLight);
 
   let cubeGeometry = new THREE.BoxGeometry(5, 5, 5);
   let cubeMaterial = new THREE.MeshBasicMaterial({
@@ -65,6 +76,7 @@ function main() {
 
   function mainLoop() {
     window.renderer.render(window.scene, window.camera);
+    orbitControls.update();
 
     requestAnimationFrame(mainLoop);
   }
