@@ -3,6 +3,8 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 //import * as TWEEN from "tween";
 
 // Own modules
+import Globe from "./objects/Globe";
+import Enviroment from "./enviroment/Enviroment";
 
 // Event functions
 import { updateAspectRatio } from "./eventfunctions/updateAspectRatio.js";
@@ -15,7 +17,7 @@ import {
 
 function main() {
   window.scene = new THREE.Scene();
-  window.scene.add(new THREE.AxesHelper(120));
+  window.scene.add(new THREE.AxesHelper(150));
 
   window.camera = new THREE.PerspectiveCamera(
     45,
@@ -41,35 +43,11 @@ function main() {
   );
   window.scene.background = backgroundImage;
 
-  const ambientLight = new THREE.AmbientLight(0xffffff);
-  ambientLight.intensity = 1;
-  window.scene.add(ambientLight);
+  const enviroment = new Enviroment();
+  window.scene.add(enviroment);
 
-  const globeRadius = 100;
-  const globeGeometry = new THREE.SphereGeometry(globeRadius, 32, 32);
-  const globeMaterial = new THREE.MeshPhongMaterial({
-    color: 0xffffff,
-    map: new THREE.TextureLoader().load("./src/images/No_Cloud_Earth_Map.jpg"),
-    bumpMap: new THREE.TextureLoader().load(
-      "./src/images/Elevation_BumpMap_Earth.jpeg"
-    ),
-    bumpScale: 0.005,
-    specularMap: new THREE.TextureLoader().load(
-      "./src/images/Water_SpecularMap_Earth.png"
-    ),
-    specular: new THREE.Color("grey"),
-  });
-  const globe = new THREE.Mesh(globeGeometry, globeMaterial);
+  const globe = new Globe();
   window.scene.add(globe);
-
-  const clouds = new THREE.Mesh(
-    new THREE.SphereGeometry(globeRadius + 0.01, 32, 32),
-    new THREE.MeshPhongMaterial({
-      map: new THREE.TextureLoader().load("./src/images/Clouds_Map_Earth.png"),
-      transparent: true,
-    })
-  );
-  window.scene.add(clouds);
 
   document.getElementById("3d_content").appendChild(window.renderer.domElement);
 
