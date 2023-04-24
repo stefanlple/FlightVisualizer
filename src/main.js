@@ -15,7 +15,7 @@ import {
 
 function main() {
   window.scene = new THREE.Scene();
-  window.scene.add(new THREE.AxesHelper(20));
+  window.scene.add(new THREE.AxesHelper(120));
 
   window.camera = new THREE.PerspectiveCamera(
     45,
@@ -23,7 +23,7 @@ function main() {
     0.1,
     1000
   );
-  window.camera.position.set(30, 40, 50);
+  window.camera.position.set(100, 160, 220);
   window.camera.lookAt(0, 0, 0);
 
   window.renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -41,36 +41,34 @@ function main() {
   );
   window.scene.background = backgroundImage;
 
-  let ambientLight = new THREE.AmbientLight(0xffffff);
-  ambientLight.intensity = 0.5;
+  const ambientLight = new THREE.AmbientLight(0xffffff);
+  ambientLight.intensity = 1;
   window.scene.add(ambientLight);
 
-  let cubeGeometry = new THREE.BoxGeometry(5, 5, 5);
-  let cubeMaterial = new THREE.MeshBasicMaterial({
-    color: 0xff0000,
-    wireframe: true,
+  const globeRadius = 100;
+  const globeGeometry = new THREE.SphereGeometry(globeRadius, 32);
+  const globeMaterial = new THREE.MeshPhongMaterial({
+    color: 0xffffff,
+    map: new THREE.TextureLoader().load("./src/images/No_Cloud_Earth_Map.jpg"),
+    bumpMap: new THREE.TextureLoader().load(
+      "./src/images/Elevation_BumpMap_Earth.jpeg"
+    ),
+    bumpScale: 0.005,
+    specularMap: new THREE.TextureLoader().load(
+      "./src/images/Water_SpecularMap_Earth.png"
+    ),
+    specular: new THREE.Color("grey"),
   });
-  let cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-  cube.position.set(-5, 3, 5);
-  window.scene.add(cube);
+  const globe = new THREE.Mesh(globeGeometry, globeMaterial);
+  window.scene.add(globe);
 
-  let sphereGeometry = new THREE.SphereGeometry(5, 10, 10);
-  let sphereMaterial = new THREE.MeshBasicMaterial({
-    color: 0x0000ff,
-    wireframe: true,
-  });
-  let sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
-  sphere.position.set(10, 5, -5);
-  window.scene.add(sphere);
-
-  let planeGeometry = new THREE.PlaneGeometry(40, 40);
-  let planeMaterial = new THREE.MeshBasicMaterial({
-    color: 0xaaaaaa,
-    wireframe: true,
-  });
-  let plane = new THREE.Mesh(planeGeometry, planeMaterial);
-  plane.rotation.set(THREE.MathUtils.degToRad(-90), 0, 0);
-  window.scene.add(plane);
+  const clouds = new THREE.Mesh(
+    new THREE.SphereGeometry(globeRadius + 0.003, 32),
+    new THREE.MeshPhongMaterial({
+      map: new THREE.TextureLoader().load("./src/images/Clouds_Map_Earth.png"),
+    })
+  );
+  window.scene.add(clouds);
 
   document.getElementById("3d_content").appendChild(window.renderer.domElement);
 
