@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { randomInRange } from "../utility/randomInRange";
-
+import { randInt } from "three/src/math/MathUtils";
 // TODO
 export default class Enviroment extends THREE.Group {
   constructor() {
@@ -13,32 +13,31 @@ export default class Enviroment extends THREE.Group {
     const ambientLight = new THREE.AmbientLight(0xffffff);
     ambientLight.intensity = 1;
     this.add(ambientLight);
-    const particlesCount = 250;
+    const particlesCount = 3500;
     const particlesGeometry = new THREE.BufferGeometry();
     const particlesPosition = new Float32Array(particlesCount * 3);
-    const particlesSpawnPosition = {
-      widthMin: (-screenWidth / 2) * 35,
-      widthMax: (screenWidth / 2) * 35,
-      heightMin: (-screenHeight / 2) * 35,
-      heightMax: (screenHeight / 2) * 35,
-    };
 
     //stars generation
+    const radius = 120;
+    const rangeStart = -300;
+    const rangeEnd = 300;
     for (
       let x = 0, y = 1, z = 2;
       x < particlesCount * 3;
       x += 3, y += 3, z += 3
     ) {
-      particlesPosition[x] = 1;
+      let [x1, y1, z1] = Array(3)
+        .fill()
+        .map(() => randomInRange(rangeStart, rangeEnd));
+      while (Math.sqrt(x1 ** 2 + y1 ** 2 + z1 ** 2) < radius) {
+        [x1, y1, z1] = Array(3)
+          .fill()
+          .map(() => randomInRange(rangeStart, rangeEnd));
+      }
 
-      particlesPosition[y] = randomInRange(
-        particlesSpawnPosition.heightMin,
-        particlesSpawnPosition.heightMax
-      );
-      particlesPosition[z] = randomInRange(
-        particlesSpawnPosition.widthMin,
-        particlesSpawnPosition.widthMax
-      );
+      particlesPosition[x] = x1;
+      particlesPosition[y] = y1;
+      particlesPosition[z] = z1;
     }
 
     particlesGeometry.setAttribute(
@@ -47,9 +46,9 @@ export default class Enviroment extends THREE.Group {
     );
 
     const particlesMaterial = new THREE.PointsMaterial({
-      size: 0.005,
+      size: 3,
     });
     const particles = new THREE.Points(particlesGeometry, particlesMaterial);
-    //this.add(particles);
+    this.add(particles);
   }
 }

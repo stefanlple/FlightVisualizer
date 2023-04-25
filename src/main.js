@@ -41,7 +41,7 @@ function main() {
   const backgroundImage = new THREE.TextureLoader().load(
     "./src/images/Stars_Env.png"
   );
-  window.scene.background = backgroundImage;
+  //window.scene.background = backgroundImage;
 
   const enviroment = new Enviroment();
   window.scene.add(enviroment);
