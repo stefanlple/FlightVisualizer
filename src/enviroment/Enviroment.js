@@ -47,7 +47,7 @@ export default class Enviroment extends THREE.Group {
     );
 
     const particlesMaterial = new THREE.PointsMaterial({
-      size: 3,
+      size: 2,
     });
     const particles = new THREE.Points(particlesGeometry, particlesMaterial);
     this.add(particles);

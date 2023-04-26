@@ -14,9 +14,17 @@ export default class Sun extends THREE.Group {
     directionalLight.target.position.set(0, 0, 0);
     this.add(directionalLight);
     this.add(directionalLight.target);
-    directionalLight.translateX(200);
     this.add(helper);
-    helper.parent.updateMatrixWorld();
-    helper.update();
+
+    this.rotateAroundOrigin = (angle, radius) => {
+      directionalLight.position.set(
+        Math.cos(angle) * radius,
+        0,
+        Math.sin(angle) * radius
+      );
+      directionalLight.target.updateWorldMatrix();
+      directionalLight.updateMatrixWorld();
+      helper.update();
+    };
   }
 }

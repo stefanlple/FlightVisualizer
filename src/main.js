@@ -54,15 +54,24 @@ function main() {
   window.scene.add(globe);
 
   const sun = new Sun();
-  //sun.position.set(0, 900, 0);
   window.scene.add(sun);
 
   document.getElementById("3d_content").appendChild(window.renderer.domElement);
 
+  const gui = new DAT.GUI();
+  const cubeFolder = gui.addFolder("Rotate around earth");
+  // cubeFolder.add(sun.rotateAroundOrigin(), "x", Math.PI * 2);
+  cubeFolder.open();
+
+  let counter = 0;
+  const clock = new THREE.Clock();
   function mainLoop() {
     window.renderer.render(window.scene, window.camera);
     orbitControls.update();
 
+    sun.rotateAroundOrigin(counter, 120);
+    console.log(counter);
+    counter = counter + clock.getDelta() / 2;
     requestAnimationFrame(mainLoop);
   }
   mainLoop();
