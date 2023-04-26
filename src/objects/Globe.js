@@ -10,7 +10,7 @@ export default class Globe extends THREE.Group {
   addParts() {
     const globeRadius = 100;
     const globeGeometry = new THREE.SphereGeometry(globeRadius);
-    const globeMaterial = new THREE.MeshPhongMaterial({
+    const globeMaterial = new THREE.MeshLambertMaterial({
       color: 0xffffff,
       map: new THREE.TextureLoader().load(
         "./src/images/No_Cloud_Earth_Map.jpg"
@@ -19,17 +19,17 @@ export default class Globe extends THREE.Group {
         "./src/images/Elevation_BumpMap_Earth.jpeg"
       ),
       bumpScale: 0.005,
-      specularMap: new THREE.TextureLoader().load(
+      /* specularMap: new THREE.TextureLoader().load(
         "./src/images/Water_SpecularMap_Earth.png"
       ),
-      specular: new THREE.Color("grey"),
+      specular: new THREE.Color("grey"), */
     });
     const globe = new THREE.Mesh(globeGeometry, globeMaterial);
     this.add(globe);
 
     const clouds = new THREE.Mesh(
       new THREE.SphereGeometry(globeRadius + 0.01),
-      new THREE.MeshPhongMaterial({
+      new THREE.MeshLambertMaterial({
         map: new THREE.TextureLoader().load(
           "./src/images/Clouds_Map_Earth.png"
         ),

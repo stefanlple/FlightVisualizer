@@ -11,14 +11,15 @@ export default class Enviroment extends THREE.Group {
 
   addParts() {
     const ambientLight = new THREE.AmbientLight(0xffffff);
-    ambientLight.intensity = 1;
+    ambientLight.intensity = 0.4;
     this.add(ambientLight);
-    const particlesCount = 3500;
+
+    const particlesCount = 400;
     const particlesGeometry = new THREE.BufferGeometry();
     const particlesPosition = new Float32Array(particlesCount * 3);
 
     //stars generation
-    const radius = 120;
+    const radius = 150;
     const rangeStart = -300;
     const rangeEnd = 300;
     for (

@@ -1,10 +1,13 @@
 import * as THREE from "three";
+import * as DAT from "dat.gui";
+
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 //import * as TWEEN from "tween";
 
 // Own modules
 import Globe from "./objects/Globe";
 import Enviroment from "./enviroment/Enviroment";
+import Sun from "./objects/Sun";
 
 // Event functions
 import { updateAspectRatio } from "./eventfunctions/updateAspectRatio.js";
@@ -47,7 +50,12 @@ function main() {
   window.scene.add(enviroment);
 
   const globe = new Globe();
+  globe.rotateX(0.40840704496); //23.4 degrees
   window.scene.add(globe);
+
+  const sun = new Sun();
+  //sun.position.set(0, 900, 0);
+  window.scene.add(sun);
 
   document.getElementById("3d_content").appendChild(window.renderer.domElement);
 
