@@ -36,6 +36,6 @@ export default class Globe extends THREE.Group {
         transparent: true,
       })
     );
-    this.add(clouds);
+    //this.add(clouds);
   }
 }

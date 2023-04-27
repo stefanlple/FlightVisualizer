@@ -11,7 +11,7 @@ export default class Enviroment extends THREE.Group {
 
   addParts() {
     const ambientLight = new THREE.AmbientLight(0xffffff);
-    ambientLight.intensity = 0.4;
+    ambientLight.intensity = 0.15;
     this.add(ambientLight);
 
     const particlesCount = 400;

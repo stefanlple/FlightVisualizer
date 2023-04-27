@@ -1,6 +1,5 @@
 import * as THREE from "three";
 import * as DAT from "dat.gui";
-
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 //import * as TWEEN from "tween";
 
@@ -8,6 +7,8 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Globe from "./objects/Globe";
 import Enviroment from "./enviroment/Enviroment";
 import Sun from "./objects/Sun";
+
+//Utilities
 
 // Event functions
 import { updateAspectRatio } from "./eventfunctions/updateAspectRatio.js";
@@ -51,6 +52,7 @@ function main() {
 
   const globe = new Globe();
   globe.rotateX(0.40840704496); //23.4 degrees
+  globe.rotateY((-3 / 5) * Math.PI); //adjust rotation to the sun
   window.scene.add(globe);
 
   const sun = new Sun();
@@ -60,18 +62,15 @@ function main() {
 
   const gui = new DAT.GUI();
   const cubeFolder = gui.addFolder("Rotate around earth");
-  // cubeFolder.add(sun.rotateAroundOrigin(), "x", Math.PI * 2);
   cubeFolder.open();
 
-  let counter = 0;
   const clock = new THREE.Clock();
+
   function mainLoop() {
     window.renderer.render(window.scene, window.camera);
     orbitControls.update();
 
-    sun.rotateAroundOrigin(counter, 120);
-    console.log(counter);
-    counter = counter + clock.getDelta() / 2;
+    sun.rotateAroundOriginBaseOnTime(300);
     requestAnimationFrame(mainLoop);
   }
   mainLoop();
