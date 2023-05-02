@@ -5,6 +5,7 @@ import Fragment from "../shaders/Fragment.glsl";
 import AtmosphereVertexShader from "../shaders/AtmosphereVertexShader.glsl";
 import AtmosphereFragmentShader from "../shaders/AtmosphereFragmentShader.glsl";
 
+import { latLonToCart } from "../utility/latLonToCartSystem";
 export default class Globe extends THREE.Group {
   constructor() {
     super();
@@ -36,23 +37,13 @@ export default class Globe extends THREE.Group {
     const globe = new THREE.Mesh(globeGeometry, globeMaterial);
     this.add(globe);
 
-    function latLonToCart(inputLat, inputLng) {
-      const lat = inputLat * (Math.PI / 180);
-      const lng = inputLng * (Math.PI / 180);
-
-      const z = globeRadius * Math.cos(lat) * Math.cos(lng);
-      const x = globeRadius * Math.cos(lat) * Math.sin(lng);
-      const y = globeRadius * Math.sin(lat);
-      return [x, y, z];
-    }
-
     const geometry = new THREE.SphereGeometry(2);
     const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
     const ball = new THREE.Mesh(geometry, material);
     ball.name = "ball";
-    ball.translateX(latLonToCart(34.052235, -118.243683)[0]);
-    ball.translateY(latLonToCart(34.052235, -118.243683)[1]);
-    ball.translateZ(latLonToCart(34.052235, -118.243683)[2]);
+    ball.translateX(latLonToCart(34.052235, -118.243683, globeRadius)[0]);
+    ball.translateY(latLonToCart(34.052235, -118.243683, globeRadius)[1]);
+    ball.translateZ(latLonToCart(34.052235, -118.243683, globeRadius)[2]);
     this.add(ball);
 
     const clouds = new THREE.Mesh(
