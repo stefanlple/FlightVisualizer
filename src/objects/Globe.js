@@ -1,4 +1,9 @@
 import * as THREE from "three";
+import Vertex from "../shaders/Vertex.glsl";
+import Fragment from "../shaders/Fragment.glsl";
+
+import AtmosphereVertexShader from "../shaders/AtmosphereVertexShader.glsl";
+import AtmosphereFragmentShader from "../shaders/AtmosphereFragmentShader.glsl";
 
 export default class Globe extends THREE.Group {
   constructor() {
@@ -37,5 +42,19 @@ export default class Globe extends THREE.Group {
       })
     );
     //this.add(clouds);
+
+    const atmosphere = new THREE.Mesh(
+      new THREE.SphereGeometry(globeRadius, 50, 50),
+      new THREE.ShaderMaterial({
+        vertexShader: AtmosphereVertexShader,
+        fragmentShader: AtmosphereFragmentShader,
+        blending: THREE.AdditiveBlending,
+        side: THREE.BackSide,
+      })
+    );
+
+    atmosphere.scale.set(1.05, 1.05, 1.05);
+
+    scene.add(atmosphere);
   }
 }
