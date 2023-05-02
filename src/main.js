@@ -51,8 +51,8 @@ function main() {
   window.scene.add(enviroment);
 
   const globe = new Globe();
-  globe.rotateX(0.40840704496); //23.4 degrees
-  globe.rotateY((-3 / 5) * Math.PI); //adjust rotation to the sun
+  /* globe.rotateX(0.40840704496); //23.4 degrees
+  globe.rotateY((-3 / 5) * Math.PI); //adjust rotation to the sun */
   window.scene.add(globe);
 
   const sun = new Sun();
