@@ -39,12 +39,20 @@ export default class Globe extends THREE.Group {
 
     const geometry = new THREE.SphereGeometry(2);
     const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+    const material1 = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
     const ball = new THREE.Mesh(geometry, material);
-    ball.name = "ball";
+    ball.name = "LA";
     ball.translateX(latLonToCart(34.052235, -118.243683, globeRadius)[0]);
     ball.translateY(latLonToCart(34.052235, -118.243683, globeRadius)[1]);
     ball.translateZ(latLonToCart(34.052235, -118.243683, globeRadius)[2]);
     this.add(ball);
+
+    const ball1 = new THREE.Mesh(geometry, material1);
+    ball1.name = "Germany";
+    ball1.translateX(latLonToCart(52.520008, 13.404954, globeRadius)[0]);
+    ball1.translateY(latLonToCart(52.520008, 13.404954, globeRadius)[1]);
+    ball1.translateZ(latLonToCart(52.520008, 13.404954, globeRadius)[2]);
+    this.add(ball1);
 
     const clouds = new THREE.Mesh(
       new THREE.SphereGeometry(globeRadius + 0.01),
