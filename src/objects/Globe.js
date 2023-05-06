@@ -47,12 +47,26 @@ export default class Globe extends THREE.Group {
     ball.translateZ(latLonToCart(34.052235, -118.243683, globeRadius)[2]);
     this.add(ball);
 
-    const ball1 = new THREE.Mesh(geometry, material1);
-    ball1.name = "Germany";
-    ball1.translateX(latLonToCart(52.520008, 13.404954, globeRadius)[0]);
-    ball1.translateY(latLonToCart(52.520008, 13.404954, globeRadius)[1]);
-    ball1.translateZ(latLonToCart(52.520008, 13.404954, globeRadius)[2]);
-    this.add(ball1);
+    async function logJSONData() {
+      console.log("hallo");
+      const response = await fetch(
+        "https://opensky-network.org/api/states/all?icao24=4b43ad"
+      );
+      const jsonData = await response.json();
+      console.log(jsonData);
+      const lat = jsonData.states[0][5];
+      const lng = jsonData.states[0][6];
+      console.log(jsonData, lat, lng);
+      const ball1 = new THREE.Mesh(geometry, material1);
+      ball1.name = "Germany";
+      ball1.translateZ(latLonToCart(lat, lng, globeRadius)[2]);
+      ball1.translateX(latLonToCart(lat, lng, globeRadius)[0]);
+      ball1.translateY(latLonToCart(lat, lng, globeRadius)[1]);
+      console.log(this);
+      this.add(ball1);
+      console.log(this);
+    }
+    logJSONData();
 
     const clouds = new THREE.Mesh(
       new THREE.SphereGeometry(globeRadius + 0.01),
