@@ -6,6 +6,7 @@ import AtmosphereVertexShader from "../shaders/AtmosphereVertexShader.glsl";
 import AtmosphereFragmentShader from "../shaders/AtmosphereFragmentShader.glsl";
 
 import { latLonToCart } from "../utility/latLonToCartSystem";
+
 export default class Globe extends THREE.Group {
   constructor() {
     super();
@@ -37,43 +38,6 @@ export default class Globe extends THREE.Group {
     const globe = new THREE.Mesh(globeGeometry, globeMaterial);
     this.add(globe);
 
-    const geometry = new THREE.SphereGeometry(0.2);
-    const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-    const material1 = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-    const ball = new THREE.Mesh(geometry, material);
-    ball.name = "LA";
-    ball.translateX(latLonToCart(34.052235, -118.243683, globeRadius)[0]);
-    ball.translateY(latLonToCart(34.052235, -118.243683, globeRadius)[1]);
-    ball.translateZ(latLonToCart(34.052235, -118.243683, globeRadius)[2]);
-    this.add(ball);
-
-    async function logJSONData(current) {
-      const response = await fetch(
-        "https://opensky-network.org/api/states/all"
-      );
-      const jsonData = await response.json();
-      console.log(jsonData);
-      const lat = jsonData.states[0][5];
-      const lng = jsonData.states[0][6];
-      console.log(jsonData, lat, lng);
-      for (const plane of jsonData.states) {
-        const ball1 = new THREE.Mesh(geometry, material1);
-        ball1.name = "Germany";
-        ball1.translateX(latLonToCart(plane[6], plane[5], globeRadius)[0]);
-        ball1.translateY(latLonToCart(plane[6], plane[5], globeRadius)[1]);
-        ball1.translateZ(latLonToCart(plane[6], plane[5], globeRadius)[2]);
-        current.add(ball1);
-      }
-      const ball1 = new THREE.Mesh(geometry, material1);
-      ball1.name = "Germany";
-      ball1.translateX(latLonToCart(lng, lat, globeRadius)[0]);
-      ball1.translateY(latLonToCart(lng, lat, globeRadius)[1]);
-      ball1.translateZ(latLonToCart(lng, lat, globeRadius)[2]);
-      current.add(ball1);
-      console.log(window.scene);
-    }
-    logJSONData(this);
-
     const clouds = new THREE.Mesh(
       new THREE.SphereGeometry(globeRadius + 0.01),
       new THREE.MeshLambertMaterial({
@@ -94,7 +58,7 @@ export default class Globe extends THREE.Group {
         side: THREE.BackSide,
       })
     );
-
     atmosphere.scale.set(1.05, 1.05, 1.05);
+    this.add(atmosphere);
   }
 }

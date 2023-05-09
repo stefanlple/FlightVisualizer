@@ -7,6 +7,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Globe from "./objects/Globe";
 import Enviroment from "./enviroment/Enviroment";
 import Sun from "./objects/Sun";
+import Planes from "./objects/Planes";
 
 //Utilities
 
@@ -45,7 +46,7 @@ function main() {
   const backgroundImage = new THREE.TextureLoader().load(
     "./src/images/Stars_Env.png"
   );
-  //window.scene.background = backgroundImage;
+  window.scene.background = backgroundImage;
 
   const enviroment = new Enviroment();
   window.scene.add(enviroment);
@@ -58,20 +59,28 @@ function main() {
   const sun = new Sun();
   window.scene.add(sun);
 
+  const planes = new Planes();
+  window.scene.add(planes);
+
   document.getElementById("3d_content").appendChild(window.renderer.domElement);
 
   const gui = new DAT.GUI();
   const cubeFolder = gui.addFolder("Rotate around earth");
   cubeFolder.open();
 
-  const clock = new THREE.Clock();
-
-  function mainLoop() {
-    window.renderer.render(window.scene, window.camera);
-    orbitControls.update();
+  var lastTimeStamp = 0;
+  let fetchTimeInSeconds = 10;
+  function mainLoop(nowTimestamp) {
+    if (nowTimestamp - lastTimeStamp >= fetchTimeInSeconds * 1000) {
+      lastTimeStamp = nowTimestamp;
+      console.log(`${fetchTimeInSeconds} seconds passed`);
+      //planes.fetchPlaneObjects();
+    }
 
     sun.rotateAroundOriginBaseOnTime(300);
+    orbitControls.update();
     requestAnimationFrame(mainLoop);
+    window.renderer.render(window.scene, window.camera);
   }
   mainLoop();
 }
