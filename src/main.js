@@ -69,12 +69,12 @@ function main() {
   cubeFolder.open();
 
   var lastTimeStamp = 0;
-  let fetchTimeInSeconds = 10;
+  let fetchTimeInSeconds = 60;
   function mainLoop(nowTimestamp) {
     if (nowTimestamp - lastTimeStamp >= fetchTimeInSeconds * 1000) {
       lastTimeStamp = nowTimestamp;
       console.log(`${fetchTimeInSeconds} seconds passed`);
-      //planes.fetchPlaneObjects();
+      planes.renderPlanes();
     }
 
     sun.rotateAroundOriginBaseOnTime(300);

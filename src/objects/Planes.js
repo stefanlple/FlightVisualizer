@@ -1,7 +1,9 @@
 import * as THREE from "three";
+import base64 from "base64-js";
 
 import { latLonToCart } from "../utility/latLonToCartSystem";
 import { removeObject3D } from "../utility/removeObject3D";
+import { username, password } from "../../info";
 
 export default class Planes extends THREE.Group {
   constructor() {
@@ -10,22 +12,31 @@ export default class Planes extends THREE.Group {
     this.plane3dObjects = [];
     this.planeObjects = [];
     this.fetchURL = "https://opensky-network.org/api/states/all";
-    this.fetchPlaneObjects();
+    this.renderPlanes();
     //this.renderPlanes(this.planeObjects);
   }
 
-  renderPlanes(planeArray) {
+  async renderPlanes() {
     const globeRadius = 100;
     const geometry = new THREE.SphereGeometry(0.2);
     const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
 
     this.plane3dObjects.forEach((e, i) => {
-      this.plane3dObjects.splice(i, 1);
       removeObject3D(e);
       window.scene.remove(e);
     });
+    this.plane3dObjects = [];
+    this.planeObjects = [];
 
-    for (const plane of planeArray) {
+    console.log({
+      "planes objecs": this.planeObjects.length,
+      "planes 3d objecs": this.plane3dObjects.length,
+      children: this.children.length,
+    });
+
+    await this.fetchPlaneObjects();
+
+    for (const plane of this.planeObjects) {
       const ball = new THREE.Mesh(geometry, material);
       ball.translateX(latLonToCart(plane[6], plane[5], globeRadius)[0]);
       ball.translateY(latLonToCart(plane[6], plane[5], globeRadius)[1]);
@@ -33,19 +44,26 @@ export default class Planes extends THREE.Group {
       this.add(ball);
       this.plane3dObjects.push(ball);
     }
+    console.log({
+      "planes objecs": this.planeObjects.length,
+      "planes 3d objecs": this.plane3dObjects.length,
+      children: this.children.length,
+    });
   }
 
   async fetchPlaneObjects() {
-    const response = await fetch(this.fetchURL);
-    const jsonData = await response.json();
-    const newPlanes = jsonData.states;
-    this.updatePlaneObjectArray(newPlanes);
-    this.renderPlanes(this.planeObjects);
-    console.log("planes objecs", this.planeObjects.length);
-    console.log("children", this.children.length);
-  }
+    const credentials = `${username}:${password}`;
+    const encoder = new TextEncoder();
+    const data = encoder.encode(credentials);
+    const encodedCredentials = base64.fromByteArray(data);
+    const response = await fetch(this.fetchURL, {
+      headers: {
+        Authorization: `Basic ${encodedCredentials}`,
+      },
+    });
 
-  updatePlaneObjectArray(newArray) {
-    this.planeObjects = newArray;
+    const jsonData = await response.json();
+    this.planeObjects = jsonData.states;
+    console.log("after fetch", this.planeObjects.length);
   }
 }
