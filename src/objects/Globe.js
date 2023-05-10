@@ -5,7 +5,7 @@ import Fragment from "../shaders/Fragment.glsl";
 import AtmosphereVertexShader from "../shaders/AtmosphereVertexShader.glsl";
 import AtmosphereFragmentShader from "../shaders/AtmosphereFragmentShader.glsl";
 
-import { latLonToCart } from "../utility/latLonToCartSystem";
+import { latLonToCart } from "../utility/latLngToCartSystem";
 
 export default class Globe extends THREE.Group {
   constructor() {

@@ -1,9 +1,11 @@
 import * as THREE from "three";
 import base64 from "base64-js";
 
-import { latLonToCart } from "../utility/latLonToCartSystem";
+import { latLonToCart } from "../utility/latLngToCartSystem";
 import { removeObject3D } from "../utility/removeObject3D";
 import { username, password } from "../../info";
+
+import Aircraft from "./Aircraft";
 
 export default class Planes extends THREE.Group {
   constructor() {
@@ -13,13 +15,10 @@ export default class Planes extends THREE.Group {
     this.planeObjects = [];
     this.fetchURL = "https://opensky-network.org/api/states/all";
     this.renderPlanes();
-    //this.renderPlanes(this.planeObjects);
   }
 
   async renderPlanes() {
-    const globeRadius = 100;
-    const geometry = new THREE.SphereGeometry(0.2);
-    const material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+    const globeRadius = 104;
 
     this.plane3dObjects.forEach((e, i) => {
       removeObject3D(e);
@@ -36,13 +35,30 @@ export default class Planes extends THREE.Group {
 
     await this.fetchPlaneObjects();
 
+    /* const ball = new THREE.Mesh(
+      new THREE.SphereGeometry(1),
+      new THREE.MeshBasicMaterial({ color: 0x00ff00 })
+    );
+    ball.translateX(latLonToCart(34.052235, -118.243683, globeRadius)[0]);
+    ball.translateY(latLonToCart(34.052235, -118.243683, globeRadius)[1]);
+    ball.translateZ(latLonToCart(34.052235, -118.243683, globeRadius)[2]);
+    this.add(ball); */
+
     for (const plane of this.planeObjects) {
-      const ball = new THREE.Mesh(geometry, material);
-      ball.translateX(latLonToCart(plane[6], plane[5], globeRadius)[0]);
-      ball.translateY(latLonToCart(plane[6], plane[5], globeRadius)[1]);
-      ball.translateZ(latLonToCart(plane[6], plane[5], globeRadius)[2]);
-      this.add(ball);
-      this.plane3dObjects.push(ball);
+      const aircraft = new Aircraft();
+      const [x, y, z] = latLonToCart(plane[6], plane[5], globeRadius);
+      aircraft.translateX(x);
+      aircraft.translateY(y);
+      aircraft.translateZ(z);
+      const theta = Math.atan2(y, x);
+      const thetaZ = Math.atan2(y, z);
+      //const rotation = latLngWithSlope(x, y, z);
+      //aircraft.rotation.copy(rotation);
+      aircraft.rotateX(-theta);
+      aircraft.rotateZ(-thetaZ);
+      aircraft.lookAt(0, 0, 0);
+      this.add(aircraft);
+      this.plane3dObjects.push(aircraft);
     }
     console.log({
       "planes objecs": this.planeObjects.length,

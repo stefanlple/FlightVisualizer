@@ -59,13 +59,13 @@ function main() {
   const globe = new Globe();
   /* globe.rotateX(0.40840704496); //23.4 degrees
   globe.rotateY((-3 / 5) * Math.PI); //adjust rotation to the sun */
-  //window.scene.add(globe);
+  window.scene.add(globe);
 
   const sun = new Sun();
   window.scene.add(sun);
 
   const planes = new Planes();
-  //window.scene.add(planes);
+  window.scene.add(planes);
 
   const aircraft = new Aircraft();
   window.scene.add(aircraft);
@@ -82,7 +82,7 @@ function main() {
   cubeFolder.open();
 
   var lastTimeStamp = 0;
-  let fetchTimeInSeconds = 60;
+  let fetchTimeInSeconds = 20;
   function mainLoop(nowTimestamp) {
     if (nowTimestamp - lastTimeStamp >= fetchTimeInSeconds * 1000) {
       lastTimeStamp = nowTimestamp;

@@ -8,9 +8,7 @@ export default class Aircraft extends THREE.Group {
   }
 
   addParts() {
-    const DIVIDE = 25;
-    // prettier-ignore
-    const positions = [
+    /*  const positions = [
       0, 0, 0.8,      
       -0.2, 0.2, 0.4, 
       0.2, 0.2, 0.4, 
@@ -28,9 +26,9 @@ export default class Aircraft extends THREE.Group {
       0.14, 0.14, -0.5, 
       0.14, -0.14, -0.5, 
       -0.14, -0.14, -0.5
-    ]
-    console.log(positions);
-    // prettier-ignore
+
+    ].map(e=>e*7.7)
+
     const indices = [
       //every 3 indices is a triangle
       //top
@@ -44,11 +42,32 @@ export default class Aircraft extends THREE.Group {
       //close end
       13,14,15,13,15,16  
 
-    ];
+    ]; */
+
+    const positions = [
+      0, 1.5384615384615385, 0, -0.38461538461538464, 0.7692307692307693, 0,
+      0.38461538461538464, 0.7692307692307693, 0, -0.19230769230769232, -1, 0,
+      0.19230769230769232, -1, 0, -0.46153846153846156, -1.3076923076923077, 0,
+      0.46153846153846156, -1.3076923076923077, 0, 0, 0.6923076923076923, 0, 0,
+      -0.038461538461538464, 0, -1.6153846153846154, -0.3076923076923077, 0,
+      1.6153846153846154, -0.3076923076923077, 0,
+    ].map((e) => e / 7);
+
+    // prettier-ignore
+    const indices = [
+      0, 1, 2,
+      1, 2, 3,
+      2, 3, 4,
+      3, 5, 6,
+      3, 4, 6,
+      //wings
+      7,8,9,
+      7,8,10
+    ]
 
     const material = new THREE.MeshBasicMaterial({
       color: 0xff0000,
-      //side: THREE.DoubleSide,
+      side: THREE.DoubleSide,
     });
 
     const corpusGeometry = new THREE.BufferGeometry();
@@ -67,10 +86,13 @@ export default class Aircraft extends THREE.Group {
     });
 
     const wing = new THREE.Mesh(
-      new THREE.PlaneGeometry(1.28, 0.56),
+      new THREE.PlaneGeometry(1.28 * 7.7, 0.56 * 7.7),
       materialDoubleSide
     );
     wing.rotateX(Math.PI / 2);
-    this.add(wing);
+    //this.add(wing);
+
+    // test.rotateY(Math.PI);
+    //this.add(test);
   }
 }
