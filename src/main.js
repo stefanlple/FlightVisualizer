@@ -4,10 +4,12 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 //import * as TWEEN from "tween";
 
 // Own modules
+import Stars from "./enviroment/Stars";
 import Globe from "./objects/Globe";
 import Enviroment from "./enviroment/Enviroment";
 import Sun from "./objects/Sun";
 import Planes from "./objects/Planes";
+import Aircraft from "./objects/Aircraft";
 
 //Utilities
 
@@ -51,16 +53,27 @@ function main() {
   const enviroment = new Enviroment();
   window.scene.add(enviroment);
 
+  const stars = new Stars();
+  window.scene.add(stars);
+
   const globe = new Globe();
   /* globe.rotateX(0.40840704496); //23.4 degrees
   globe.rotateY((-3 / 5) * Math.PI); //adjust rotation to the sun */
-  window.scene.add(globe);
+  //window.scene.add(globe);
 
   const sun = new Sun();
   window.scene.add(sun);
 
   const planes = new Planes();
-  window.scene.add(planes);
+  //window.scene.add(planes);
+
+  const aircraft = new Aircraft();
+  window.scene.add(aircraft);
+
+  const geometry = new THREE.SphereGeometry(0.2);
+  const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+  const ball = new THREE.Mesh(geometry, material);
+  window.scene.add(ball);
 
   document.getElementById("3d_content").appendChild(window.renderer.domElement);
 
