@@ -51,10 +51,11 @@ export default class Planes extends THREE.Group {
       aircraft.translateX(x);
       aircraft.translateY(y);
       aircraft.translateZ(z);
-      //const rotation = latLngWithSlope(x, y, z);
-      //aircraft.rotation.copy(rotation);
+      aircraft.icao24 = plane[0];
+
       aircraft.lookAt(0, 0, 0);
       aircraft.rotateZ(THREE.MathUtils.degToRad(orientation));
+      aircraft.material.color.setHex(0xff0000);
       this.add(aircraft);
       this.plane3dObjects.push(aircraft);
     }

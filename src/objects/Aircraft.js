@@ -3,13 +3,15 @@ import * as THREE from "three";
 export default class Aircraft extends THREE.Group {
   constructor() {
     super();
+    this.name = "aircraft";
     this.icao24 = "";
+    this.material;
     this.addParts();
   }
 
   addParts() {
     /*  const positions = [
-      0, 0, 0.8,      
+      0, 0, 0.8, 
       -0.2, 0.2, 0.4, 
       0.2, 0.2, 0.4, 
       0.2, -0.2, 0.4, 
@@ -70,6 +72,8 @@ export default class Aircraft extends THREE.Group {
       side: THREE.DoubleSide,
     });
 
+    this.material = material;
+
     const corpusGeometry = new THREE.BufferGeometry();
     corpusGeometry.setAttribute(
       "position",
@@ -85,12 +89,12 @@ export default class Aircraft extends THREE.Group {
       side: THREE.DoubleSide,
     });
 
-    const wing = new THREE.Mesh(
+    /* const wing = new THREE.Mesh(
       new THREE.PlaneGeometry(1.28 * 7.7, 0.56 * 7.7),
       materialDoubleSide
     );
     wing.rotateX(Math.PI / 2);
-    //this.add(wing);
+    //this.add(wing); */
 
     // test.rotateY(Math.PI);
     //this.add(test);
