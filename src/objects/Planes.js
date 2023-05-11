@@ -47,16 +47,14 @@ export default class Planes extends THREE.Group {
     for (const plane of this.planeObjects) {
       const aircraft = new Aircraft();
       const [x, y, z] = latLonToCart(plane[6], plane[5], globeRadius);
+      const orientation = plane[10];
       aircraft.translateX(x);
       aircraft.translateY(y);
       aircraft.translateZ(z);
-      const theta = Math.atan2(y, x);
-      const thetaZ = Math.atan2(y, z);
       //const rotation = latLngWithSlope(x, y, z);
       //aircraft.rotation.copy(rotation);
-      aircraft.rotateX(-theta);
-      aircraft.rotateZ(-thetaZ);
       aircraft.lookAt(0, 0, 0);
+      aircraft.rotateZ(THREE.MathUtils.degToRad(orientation));
       this.add(aircraft);
       this.plane3dObjects.push(aircraft);
     }
@@ -80,6 +78,7 @@ export default class Planes extends THREE.Group {
 
     const jsonData = await response.json();
     this.planeObjects = jsonData.states;
+    console.log(this.planeObjects[0]);
     console.log("after fetch", this.planeObjects.length);
   }
 }

@@ -82,7 +82,7 @@ function main() {
   cubeFolder.open();
 
   var lastTimeStamp = 0;
-  let fetchTimeInSeconds = 20;
+  let fetchTimeInSeconds = 10;
   function mainLoop(nowTimestamp) {
     if (nowTimestamp - lastTimeStamp >= fetchTimeInSeconds * 1000) {
       lastTimeStamp = nowTimestamp;
