@@ -18,7 +18,7 @@ export default class Planes extends THREE.Group {
   }
 
   async renderPlanes() {
-    const globeRadius = 104;
+    const globeRadius = 102;
 
     this.plane3dObjects.forEach((e, i) => {
       removeObject3D(e);
@@ -59,6 +59,7 @@ export default class Planes extends THREE.Group {
       this.add(aircraft);
       this.plane3dObjects.push(aircraft);
     }
+
     console.log({
       "planes objecs": this.planeObjects.length,
       "planes 3d objecs": this.plane3dObjects.length,

@@ -8,7 +8,60 @@
     <title>FlightVisualizer</title>
   </head>
   <body>
+    <div id="aircraft_info_box" style="width: 0">
+      <h1 style="display: inline">INFO BOX</h1>
+      <span id="close-button"></span>
+      <table>
+        <tbody>
+          <tr>
+            <td>LAST CONTACT</td>
+            <td id="last-contact">test</td>
+          </tr>
+          <tr>
+            <td>ICAO</td>
+            <td id="icao">test</td>
+          </tr>
+          <tr>
+            <td>CALL SIGN</td>
+            <td id="call-sign">test</td>
+          </tr>
+          <tr>
+            <td>LONGITUDE</td>
+            <td id="longitude">test</td>
+          </tr>
+          <tr>
+            <td>LATITUDE</td>
+            <td id="latitude">test</td>
+          </tr>
+          <tr>
+            <td>BAROM. ALTITUDE</td>
+            <td id="barom-altitude">test</td>
+          </tr>
+          <tr>
+            <td>GEO. ALTITUDE</td>
+            <td id="geo-altitude">test</td>
+          </tr>
+          <tr>
+            <td>VERTICAL RATE</td>
+            <td id="vertical-rate">test</td>
+          </tr>
+          <tr>
+            <td>VELOCITY</td>
+            <td id="velocity">test</td>
+          </tr>
+          <tr>
+            <td>TRUE TRACK</td>
+            <td id="true-track">test</td>
+          </tr>
+          <tr>
+            <td>SOURCE</td>
+            <td id="source">test</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     <div id="3d_content"></div>
     <script type="module" src="./src/main.js"></script>
+    <script type="module" src="./src/features/aircraftInfoBox.js"></script>
   </body>
 </html>

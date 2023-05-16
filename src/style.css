@@ -84,3 +84,46 @@ body {
 #overlay {
   transform: translate(0%, 155%);
 }
+
+#aircraft_info_box {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background-color: white;
+  overflow: hidden;
+}
+
+#close-button {
+  height: 20px;
+  width: 20px;
+  position: relative;
+  box-sizing: border-box;
+  line-height: 20px;
+  border: 1px solid black;
+  border-radius: 20px;
+  color: black;
+  text-align: center;
+  float: right;
+  margin-top: 0.5rem;
+  margin-right: 0.5rem;
+}
+
+#close-button:before,
+#close-button:after {
+  transform: rotate(-45deg);
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -1px;
+  margin-left: -6px;
+  display: block;
+  height: 2px;
+  width: 12px;
+  background-color: black;
+}
+
+#close-button:after {
+  transform: rotate(45deg);
+}
