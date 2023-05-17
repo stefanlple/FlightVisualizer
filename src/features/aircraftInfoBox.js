@@ -13,5 +13,4 @@ const closeButton = document.getElementById("close-button");
 
 closeButton.onclick = () => {
   aircraftInfoBox.style.width = "0";
-  clearInterval(document.getElementById("last-contact").dataset.intervalID);
 };

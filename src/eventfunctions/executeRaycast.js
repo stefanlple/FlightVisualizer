@@ -23,7 +23,7 @@ export function executeRaycast() {
   }
 }
 
-async function fetchAircraftOnIcao(icao24, textNodes) {
+async function fetchAircraftOnIcao(icao24) {
   const credentials = `${username}:${password}`;
   const encoder = new TextEncoder();
   const data = encoder.encode(credentials);
@@ -42,9 +42,7 @@ async function fetchAircraftOnIcao(icao24, textNodes) {
 
 function displayData(data) {
   const aircraftInfoBox = document.getElementById("aircraft_info_box");
-  const closeButton = document.getElementById("close-button");
 
-  const lastContact = document.getElementById("last-contact");
   const icao = document.getElementById("icao");
   const callSign = document.getElementById("call-sign");
   const longitude = document.getElementById("longitude");
@@ -56,24 +54,30 @@ function displayData(data) {
   const trueTrack = document.getElementById("true-track");
   const source = document.getElementById("source");
 
-  lastContact.innerHTML = 0; //data[4];
-  lastContact.dataset.intervalID = setInterval(() => {
-    let current = parseInt(lastContact.innerHTML);
-    current++;
-    lastContact.innerHTML = current;
-  }, 1000);
   icao.innerHTML = data[0];
   callSign.innerHTML = data[1];
   longitude.innerHTML = data[5] + " &#176";
   latitude.innerHTML = data[6] + " &#176";
-  baromAltitude.innerHTML = data[7] + " ft " + `(${data[7] * 0.304})`;
-  geoAltitude.innerHTML = data[13] + " ft " + `(${data[13] * 0.304})`;
-  verticalRate.innerHTML = data[11] + " ft/min " + `(${data[11] * 0.0051})`;
+  baromAltitude.innerHTML =
+    Math.round(data[7]) + " ft " + `(${Math.round(data[7] * 0.304)} m)`;
+  geoAltitude.innerHTML =
+    Math.round(data[13]) + " ft " + `(${Math.round(data[13] * 0.304)} m)`;
+  verticalRate.innerHTML = !!data[11]
+    ? data[11] * 196.85 + " ft/min " + `(${data[11]} m/s)`
+    : "N/A";
   velocity.innerHTML = data[9] + " m/s";
   trueTrack.innerHTML = data[10] + " &#176";
-  source.innerHTML = data[16];
+  source.innerHTML = {
+    0: "ADS-B",
 
-  aircraftInfoBox.style.width = "14%";
+    1: "ASTERIX",
+
+    2: "MLAT",
+
+    3: "FLARM",
+  }[data[16]];
+
+  aircraftInfoBox.style.width = "auto";
 
   // let isOpen = false;
   /* closeButton.onclick = () => {
