@@ -18,6 +18,7 @@ export default class Planes extends THREE.Group {
   }
 
   async renderPlanes() {
+    //plus two to lift the planes up
     const globeRadius = 102;
 
     this.plane3dObjects.forEach((e, i) => {
@@ -35,18 +36,19 @@ export default class Planes extends THREE.Group {
 
     await this.fetchPlaneObjects();
 
-    /* const ball = new THREE.Mesh(
-      new THREE.SphereGeometry(1),
+    const ball = new THREE.Mesh(
+      new THREE.SphereGeometry(2),
       new THREE.MeshBasicMaterial({ color: 0x00ff00 })
     );
-    ball.translateX(latLonToCart(34.052235, -118.243683, globeRadius)[0]);
-    ball.translateY(latLonToCart(34.052235, -118.243683, globeRadius)[1]);
-    ball.translateZ(latLonToCart(34.052235, -118.243683, globeRadius)[2]);
-    this.add(ball); */
+    ball.translateX(latLonToCart(34.052235, -118.243683, 0, globeRadius)[0]);
+    ball.translateY(latLonToCart(34.052235, -118.243683, 0, globeRadius)[1]);
+    ball.translateZ(latLonToCart(34.052235, -118.243683, 0, globeRadius)[2]);
+    ball.name = "LOS ANGELES";
+    window.scene.add(ball);
 
     for (const plane of this.planeObjects) {
       const aircraft = new Aircraft();
-      const [x, y, z] = latLonToCart(plane[6], plane[5], globeRadius);
+      const [x, y, z] = latLonToCart(plane[6], plane[5], plane[7], globeRadius);
       const orientation = plane[10];
       aircraft.translateX(x);
       aircraft.translateY(y);
@@ -80,7 +82,7 @@ export default class Planes extends THREE.Group {
 
     const jsonData = await response.json();
     this.planeObjects = jsonData.states;
-    console.log(this.planeObjects[0]);
-    console.log("after fetch", this.planeObjects.length);
+    /* console.log(this.planeObjects[0]);
+    console.log("after fetch", this.planeObjects.length); */
   }
 }

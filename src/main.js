@@ -70,10 +70,12 @@ function main() {
   const aircraft = new Aircraft();
   window.scene.add(aircraft);
 
-  const geometry = new THREE.SphereGeometry(0.2);
+  console.log(aircraft);
+
+  /* const geometry = new THREE.SphereGeometry(0.2);
   const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
   const ball = new THREE.Mesh(geometry, material);
-  window.scene.add(ball);
+  window.scene.add(ball); */
 
   document.getElementById("3d_content").appendChild(window.renderer.domElement);
 

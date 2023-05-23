@@ -5,8 +5,6 @@ import Fragment from "../shaders/Fragment.glsl";
 import AtmosphereVertexShader from "../shaders/AtmosphereVertexShader.glsl";
 import AtmosphereFragmentShader from "../shaders/AtmosphereFragmentShader.glsl";
 
-import { latLonToCart } from "../utility/latLngToCartSystem";
-
 export default class Globe extends THREE.Group {
   constructor() {
     super();
@@ -20,14 +18,18 @@ export default class Globe extends THREE.Group {
     const globeMaterial = new THREE.MeshLambertMaterial({
       color: 0xffffff,
       map: new THREE.TextureLoader().load(
-        "./src/images/No_Cloud_Earth_Map.jpg",
+        "./src/images/8081_earthmap10k.jpg",
         (texture) => {
           texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
           texture.offset.x = 1.5708 / (2 * Math.PI);
         }
       ),
       bumpMap: new THREE.TextureLoader().load(
-        "./src/images/Elevation_BumpMap_Earth.jpeg"
+        "./src/images/8081_earthbump10k.jpg",
+        (texture) => {
+          texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+          texture.offset.x = 1.5708 / (2 * Math.PI);
+        }
       ),
       bumpScale: 0.005,
       /* specularMap: new THREE.TextureLoader().load(
@@ -42,8 +44,13 @@ export default class Globe extends THREE.Group {
       new THREE.SphereGeometry(globeRadius + 0.01),
       new THREE.MeshLambertMaterial({
         map: new THREE.TextureLoader().load(
-          "./src/images/Clouds_Map_Earth.png"
+          "./src/images/Clouds_Map_Earth.png",
+          (texture) => {
+            texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+            texture.offset.x = 1.5708 / (2 * Math.PI);
+          }
         ),
+
         transparent: true,
       })
     );

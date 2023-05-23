@@ -5,9 +5,11 @@ import { findObjectByName } from "../utility/findObjectbyName";
 
 import { username, password } from "../../info";
 
+import { latLonToCart } from "../utility/latLngToCartSystem";
+
 window.raycaster = new THREE.Raycaster();
 
-export function executeRaycast() {
+export async function executeRaycast() {
   //raycast
   window.raycaster.setFromCamera(window.mousePosition, window.camera);
   let intersects = window.raycaster.intersectObject(window.scene, true);
@@ -18,7 +20,10 @@ export function executeRaycast() {
     const object = findObjectByName(firstHit, "aircraft");
     if (object?.icao24) {
       const icao24 = object.icao24;
-      fetchAircraftOnIcao(icao24);
+      await Promise.all([
+        fetchAircraftOnIcao(icao24),
+        fetchTrackOnIcao(icao24),
+      ]);
     }
   }
 }
@@ -38,6 +43,39 @@ async function fetchAircraftOnIcao(icao24) {
   const jsonData = await response.json();
   console.log(jsonData.states[0]);
   displayData(jsonData.states[0]);
+}
+
+const globeRadius = 102;
+
+async function fetchTrackOnIcao(icao24) {
+  const credentials = `${username}:${password}`;
+  const encoder = new TextEncoder();
+  const data = encoder.encode(credentials);
+  const encodedCredentials = base64.fromByteArray(data);
+
+  const url = `https://opensky-network.org/api/tracks/all?icao24=${icao24}&time=0`;
+  const response = await fetch(url, {
+    headers: {
+      Authorization: `Basic ${encodedCredentials}`,
+    },
+  });
+  const jsonData = await response.json();
+  console.log("track", jsonData.path);
+
+  const pathJson = jsonData.path;
+  const pathPoints = [];
+  pathJson.forEach((e) => {
+    const [x, y, z] = latLonToCart(e[1], e[2], e[3], globeRadius);
+    pathPoints.push(new THREE.Vector3(x, y, z));
+  });
+
+  const geometry = new THREE.BufferGeometry().setFromPoints(pathPoints);
+  const material = new THREE.LineBasicMaterial({
+    color: 0x00ff00,
+    linewidth: 5,
+  });
+  const line = new THREE.Line(geometry, material);
+  window.scene.add(line);
 }
 
 function displayData(data) {
