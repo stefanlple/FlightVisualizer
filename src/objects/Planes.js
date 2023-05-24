@@ -3,6 +3,8 @@ import base64 from "base64-js";
 
 import { latLonToCart } from "../utility/latLngToCartSystem";
 import { removeObject3D } from "../utility/removeObject3D";
+import { removeTrack } from "../utility/removeTrack";
+
 import { username, password } from "../../info";
 
 import Aircraft from "./Aircraft";
@@ -51,6 +53,8 @@ export default class Planes extends THREE.Group {
       this.add(aircraft);
       this.plane3dObjects.push(aircraft);
     }
+
+    removeTrack();
 
     console.log({
       "planes objecs": this.planeObjects.length,

@@ -127,3 +127,13 @@ body {
 #close-button:after {
   transform: rotate(45deg);
 }
+
+#altitude_box {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 500px;
+  height: 250px;
+  background-color: white;
+}

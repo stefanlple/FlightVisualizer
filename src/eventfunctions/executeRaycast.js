@@ -6,6 +6,7 @@ import { findObjectByName } from "../utility/findObjectbyName";
 import { username, password } from "../../info";
 
 import { latLonToCart } from "../utility/latLngToCartSystem";
+import { removeTrack } from "../utility/removeTrack";
 
 window.raycaster = new THREE.Raycaster();
 
@@ -48,6 +49,8 @@ async function fetchAircraftOnIcao(icao24) {
 const globeRadius = 102;
 
 async function fetchTrackOnIcao(icao24) {
+  removeTrack();
+
   const credentials = `${username}:${password}`;
   const encoder = new TextEncoder();
   const data = encoder.encode(credentials);
