@@ -21,6 +21,7 @@ import {
   keyDownAction,
   keyUpAction,
 } from "./eventfunctions/executeKeyAction.js";
+import { latLonToCart } from "./utility/latLngToCartSystem";
 
 function main() {
   window.scene = new THREE.Scene();
@@ -67,15 +68,18 @@ function main() {
   const planes = new Planes();
   window.scene.add(planes);
 
-  const aircraft = new Aircraft();
-  window.scene.add(aircraft);
+  /* const aircraft = new Aircraft();
+  window.scene.add(aircraft); */
 
-  console.log(aircraft);
-
-  /* const geometry = new THREE.SphereGeometry(0.2);
-  const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-  const ball = new THREE.Mesh(geometry, material);
-  window.scene.add(ball); */
+  const ball = new THREE.Mesh(
+    new THREE.SphereGeometry(2),
+    new THREE.MeshBasicMaterial({ color: 0x00ff00 })
+  );
+  ball.translateX(latLonToCart(34.052235, -118.243683, 0, 102)[0]);
+  ball.translateY(latLonToCart(34.052235, -118.243683, 0, 102)[1]);
+  ball.translateZ(latLonToCart(34.052235, -118.243683, 0, 102)[2]);
+  ball.name = "LOS ANGELES";
+  window.scene.add(ball);
 
   document.getElementById("3d_content").appendChild(window.renderer.domElement);
 

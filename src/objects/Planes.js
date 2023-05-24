@@ -36,16 +36,6 @@ export default class Planes extends THREE.Group {
 
     await this.fetchPlaneObjects();
 
-    const ball = new THREE.Mesh(
-      new THREE.SphereGeometry(2),
-      new THREE.MeshBasicMaterial({ color: 0x00ff00 })
-    );
-    ball.translateX(latLonToCart(34.052235, -118.243683, 0, globeRadius)[0]);
-    ball.translateY(latLonToCart(34.052235, -118.243683, 0, globeRadius)[1]);
-    ball.translateZ(latLonToCart(34.052235, -118.243683, 0, globeRadius)[2]);
-    ball.name = "LOS ANGELES";
-    window.scene.add(ball);
-
     for (const plane of this.planeObjects) {
       const aircraft = new Aircraft();
       const [x, y, z] = latLonToCart(plane[6], plane[5], plane[7], globeRadius);

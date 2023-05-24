@@ -41,7 +41,7 @@ async function fetchAircraftOnIcao(icao24) {
     },
   });
   const jsonData = await response.json();
-  console.log(jsonData.states[0]);
+  console.log("aircraft fetched", jsonData.states[0]);
   displayData(jsonData.states[0]);
 }
 
@@ -69,13 +69,16 @@ async function fetchTrackOnIcao(icao24) {
     pathPoints.push(new THREE.Vector3(x, y, z));
   });
 
-  const geometry = new THREE.BufferGeometry().setFromPoints(pathPoints);
-  const material = new THREE.LineBasicMaterial({
-    color: 0x00ff00,
-    linewidth: 5,
-  });
-  const line = new THREE.Line(geometry, material);
-  window.scene.add(line);
+  const track = new THREE.Line(
+    new THREE.BufferGeometry().setFromPoints(pathPoints),
+    new THREE.LineBasicMaterial({
+      color: 0x00ff00,
+      linewidth: 5,
+    })
+  );
+  track.name = "track";
+  window.scene.add(track);
+  console.log(window.scene);
 }
 
 function displayData(data) {
