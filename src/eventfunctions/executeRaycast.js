@@ -3,11 +3,14 @@ import * as d3 from "d3";
 import base64 from "base64-js";
 
 import { findObjectByName } from "../utility/findObjectbyName";
+import { removeObject3D } from "../utility/removeObject3D";
 
 import { username, password } from "../../info";
 
 import { latLonToCart } from "../utility/latLngToCartSystem";
 import { removeTrack } from "../utility/removeTrack";
+
+import Aircraft from "../objects/Aircraft";
 
 window.raycaster = new THREE.Raycaster();
 
@@ -64,7 +67,6 @@ async function fetchTrackOnIcao(icao24) {
     },
   });
   const jsonData = await response.json();
-  console.log("track", jsonData.path);
 
   const pathJson = jsonData.path;
   const pathPoints = [];
@@ -83,18 +85,25 @@ async function fetchTrackOnIcao(icao24) {
   track.name = "track";
   window.scene.add(track);
   console.log(window.scene);
-
-  drawGraph(pathJson);
+  drawGraphAndPlane(pathJson, track);
 }
 
-function drawGraph(dataPoints) {
+function drawGraphAndPlane(dataPoints, track) {
   // Sample data points
   const dataTrack = [];
 
   dataPoints.forEach((e) => {
     const timestamp = e[0];
     const date = new Date(timestamp * 1000); // Convert Unix timestamp to milliseconds
-    dataTrack.push({ time: date, altitude: e[3] });
+    dataTrack.push({
+      time: date,
+      altitude: e[3],
+      position: {
+        latitude: e[1],
+        longitude: e[2],
+        trueTrack: e[4],
+      },
+    });
   });
   //remove previous content
   d3.select("#graph").selectAll("*").remove();
@@ -173,9 +182,26 @@ function drawGraph(dataPoints) {
         )
         .style("left", `${event.pageX}px`)
         .style("top", `${event.pageY}px`);
+
+      const [x, y, z] = latLonToCart(
+        d.position.latitude,
+        d.position.longitude,
+        d.altitude,
+        102.1
+      );
+      if (track.children.length === 0) {
+        const aircraft = new Aircraft();
+        aircraft.position.set(x, y, z);
+        aircraft.lookAt(0, 0, 0);
+        aircraft.rotateZ(THREE.MathUtils.degToRad(d.position.trueTrack));
+        track.add(aircraft);
+      }
     })
     .on("mouseout", () => {
       // Hide tooltip on mouseout
+      if (track.children.length !== 0) {
+        removeObject3D(track.children[0]);
+      }
       tooltip.style("opacity", 0);
     });
 
