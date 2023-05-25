@@ -46,6 +46,10 @@ function main() {
   );
   orbitControls.update();
 
+  /*   orbitControls.addEventListener("change", () => {
+    console.log(orbitControls.getZoomState());
+  }); */
+
   const backgroundImage = new THREE.TextureLoader().load(
     "./src/images/Stars_Env.png"
   );

@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import * as d3 from "d3";
 import base64 from "base64-js";
 
 import { findObjectByName } from "../utility/findObjectbyName";
@@ -82,6 +83,111 @@ async function fetchTrackOnIcao(icao24) {
   track.name = "track";
   window.scene.add(track);
   console.log(window.scene);
+
+  drawGraph(pathJson);
+}
+
+function drawGraph(dataPoints) {
+  // Sample data points
+  const dataTrack = [];
+
+  dataPoints.forEach((e) => {
+    const timestamp = e[0];
+    const date = new Date(timestamp * 1000); // Convert Unix timestamp to milliseconds
+    dataTrack.push({ time: date, altitude: e[3] });
+  });
+  //remove previous content
+  d3.select("#graph").selectAll("*").remove();
+
+  // Set up dimensions and margins for the graph
+  const margin = { top: 20, right: 20, bottom: 30, left: 50 };
+  const width = 500 - margin.left - margin.right;
+  const height = 250 - margin.top - margin.bottom;
+
+  // Create an SVG container
+  const svg = d3
+    .select("#graph")
+    .attr(
+      "viewBox",
+      `0 0 ${width + margin.left + margin.right} ${
+        height + margin.top + margin.bottom
+      }`
+    )
+    .append("g")
+    .attr("transform", `translate(${margin.left},${margin.top})`);
+
+  // Define scales for x and y axes
+  const xScale = d3
+    .scaleTime()
+    .domain(d3.extent(dataTrack, (d) => d.time))
+    .range([0, width]);
+
+  const yScale = d3
+    .scaleLinear()
+    .domain([0, d3.max(dataTrack, (d) => d.altitude)])
+    .range([height, 0]);
+
+  // Create x and y axes
+  const xAxis = d3.axisBottom(xScale).tickFormat(d3.timeFormat("%H:%M"));
+  const yAxis = d3.axisLeft(yScale);
+
+  // Append x and y axes to the SVG container
+  svg.append("g").attr("transform", `translate(0,${height})`).call(xAxis);
+
+  svg.append("g").call(yAxis);
+
+  // Create a line generator for the altitude path
+  const line = d3
+    .line()
+    .x((d) => xScale(d.time))
+    .y((d) => yScale(d.altitude));
+
+  // Draw the altitude path
+  svg
+    .append("path")
+    .datum(dataTrack)
+    .attr("fill", "none")
+    .attr("stroke", "steelblue")
+    .attr("stroke-width", 1.5)
+    .attr("d", line);
+
+  // Add data points as circles
+  svg
+    .selectAll(".datapoint")
+    .data(dataTrack)
+    .enter()
+    .append("circle")
+    .attr("class", "datapoint")
+    .attr("cx", (d) => xScale(d.time))
+    .attr("cy", (d) => yScale(d.altitude))
+    .attr("r", 3)
+    .attr("fill", "steelblue")
+    .on("mouseover", (event, d) => {
+      // Show tooltip on mouseover
+      tooltip
+        .style("opacity", 1)
+        .html(
+          `Time: ${d.time.getHours()}:${d.time.getMinutes()}, Altitude: ${
+            d.altitude
+          }`
+        )
+        .style("left", `${event.pageX}px`)
+        .style("top", `${event.pageY}px`);
+    })
+    .on("mouseout", () => {
+      // Hide tooltip on mouseout
+      tooltip.style("opacity", 0);
+    });
+
+  // Create a tooltip element
+  const tooltip = d3
+    .select("body")
+    .append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0);
+
+  const trackBox = document.getElementById("altitude_box");
+  trackBox.style.height = "250px";
 }
 
 function displayData(data) {
@@ -122,10 +228,4 @@ function displayData(data) {
   }[data[16]];
 
   aircraftInfoBox.style.width = "auto";
-
-  // let isOpen = false;
-  /* closeButton.onclick = () => {
-    aircraftInfoBox.style.width = isOpen ? "0" : "20%";
-    isOpen = !isOpen;
-  }; */
 }
