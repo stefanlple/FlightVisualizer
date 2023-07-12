@@ -1,9 +1,11 @@
 import * as THREE from "three";
-import * as d3 from "d3";
-import base64 from "base64-js";
+import * as TWEEN from "@tweenjs/tween.js";
+import * as D3 from "d3";
+import BASE64 from "base64-js";
 
 import { findObjectByName } from "../utility/findObjectbyName";
 import { removeObject3D } from "../utility/removeObject3D";
+import { calculateCameraPosition } from "../utility/calculateCameraPosition";
 
 import { username, password } from "../../info";
 
@@ -23,8 +25,31 @@ export async function executeRaycast() {
     let firstHit = intersects[0].object;
 
     const object = findObjectByName(firstHit, "aircraft");
+
     if (object?.icao24) {
+      new TWEEN.Tween(window.camera)
+        .to(
+          {
+            position: calculateCameraPosition(
+              new THREE.Vector3(0, 0, 0),
+              object.position,
+              20
+            ),
+          },
+          1300
+        )
+        .easing(TWEEN.Easing.Sinusoidal.Out)
+        .onStart(() => {
+          window.orbitcontrols.enabled = false;
+          window.camera.cameraRotateAroundGlobe = false;
+        })
+        .onComplete(() => {
+          window.orbitcontrols.enabled = true;
+        })
+        .start();
+
       const icao24 = object.icao24;
+
       await Promise.all([
         fetchAircraftOnIcao(icao24),
         fetchTrackOnIcao(icao24),
@@ -37,7 +62,7 @@ async function fetchAircraftOnIcao(icao24) {
   const credentials = `${username}:${password}`;
   const encoder = new TextEncoder();
   const data = encoder.encode(credentials);
-  const encodedCredentials = base64.fromByteArray(data);
+  const encodedCredentials = BASE64.fromByteArray(data);
 
   const url = "https://opensky-network.org/api/states/all?icao24=";
   const response = await fetch(url + icao24, {
@@ -58,7 +83,7 @@ async function fetchTrackOnIcao(icao24) {
   const credentials = `${username}:${password}`;
   const encoder = new TextEncoder();
   const data = encoder.encode(credentials);
-  const encodedCredentials = base64.fromByteArray(data);
+  const encodedCredentials = BASE64.fromByteArray(data);
 
   const url = `https://opensky-network.org/api/tracks/all?icao24=${icao24}&time=0`;
   const response = await fetch(url, {
@@ -106,7 +131,7 @@ function drawGraphAndPlane(dataPoints, track) {
     });
   });
   //remove previous content
-  d3.select("#graph").selectAll("*").remove();
+  D3.select("#graph").selectAll("*").remove();
 
   // Set up dimensions and margins for the graph
   const margin = { top: 20, right: 20, bottom: 30, left: 50 };
@@ -114,8 +139,7 @@ function drawGraphAndPlane(dataPoints, track) {
   const height = 250 - margin.top - margin.bottom;
 
   // Create an SVG container
-  const svg = d3
-    .select("#graph")
+  const svg = D3.select("#graph")
     .attr(
       "viewBox",
       `0 0 ${width + margin.left + margin.right} ${
@@ -126,19 +150,17 @@ function drawGraphAndPlane(dataPoints, track) {
     .attr("transform", `translate(${margin.left},${margin.top})`);
 
   // Define scales for x and y axes
-  const xScale = d3
-    .scaleTime()
-    .domain(d3.extent(dataTrack, (d) => d.time))
+  const xScale = D3.scaleTime()
+    .domain(D3.extent(dataTrack, (d) => d.time))
     .range([0, width]);
 
-  const yScale = d3
-    .scaleLinear()
-    .domain([0, d3.max(dataTrack, (d) => d.altitude)])
+  const yScale = D3.scaleLinear()
+    .domain([0, D3.max(dataTrack, (d) => d.altitude)])
     .range([height, 0]);
 
   // Create x and y axes
-  const xAxis = d3.axisBottom(xScale).tickFormat(d3.timeFormat("%H:%M"));
-  const yAxis = d3.axisLeft(yScale);
+  const xAxis = D3.axisBottom(xScale).tickFormat(D3.timeFormat("%H:%M"));
+  const yAxis = D3.axisLeft(yScale);
 
   // Append x and y axes to the SVG container
   svg.append("g").attr("transform", `translate(0,${height})`).call(xAxis);
@@ -146,8 +168,7 @@ function drawGraphAndPlane(dataPoints, track) {
   svg.append("g").call(yAxis);
 
   // Create a line generator for the altitude path
-  const line = d3
-    .line()
+  const line = D3.line()
     .x((d) => xScale(d.time))
     .y((d) => yScale(d.altitude));
 
@@ -206,8 +227,7 @@ function drawGraphAndPlane(dataPoints, track) {
     });
 
   // Create a tooltip element
-  const tooltip = d3
-    .select("body")
+  const tooltip = D3.select("body")
     .append("div")
     .attr("class", "tooltip")
     .style("opacity", 0);

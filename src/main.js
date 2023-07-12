@@ -1,7 +1,7 @@
 import * as THREE from "three";
+import * as TWEEN from "@tweenjs/tween.js";
 import * as DAT from "dat.gui";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-//import * as TWEEN from "tween";
 
 // Own modules
 import Stars from "./enviroment/Stars";
@@ -12,6 +12,9 @@ import Planes from "./objects/Planes";
 import Aircraft from "./objects/Aircraft";
 
 //Utilities
+import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
+import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
 
 // Event functions
 import { updateAspectRatio } from "./eventfunctions/updateAspectRatio.js";
@@ -22,6 +25,7 @@ import {
   keyUpAction,
 } from "./eventfunctions/executeKeyAction.js";
 import { latLonToCart } from "./utility/latLngToCartSystem";
+import { executeRaycastOnMove } from "./eventfunctions/executeRaycastOnMove";
 
 function main() {
   window.scene = new THREE.Scene();
@@ -44,16 +48,18 @@ function main() {
     window.camera,
     window.renderer.domElement
   );
-  orbitControls.update();
 
-  /*   orbitControls.addEventListener("change", () => {
-    console.log(orbitControls.getZoomState());
-  }); */
+  orbitControls.addEventListener("start", () => {
+    window.camera.cameraRotateAroundGlobe = false;
+  });
+  window.orbitcontrols = orbitControls;
+
+  orbitControls.update();
 
   const backgroundImage = new THREE.TextureLoader().load(
     "./src/images/Stars_Env.png"
   );
-  window.scene.background = backgroundImage;
+  //window.scene.background = backgroundImage;
 
   const enviroment = new Enviroment();
   window.scene.add(enviroment);
@@ -85,32 +91,61 @@ function main() {
   ball.name = "LOS ANGELES";
   window.scene.add(ball);
 
+  const renderScene = new RenderPass(window.scene, window.camera);
+  const composer = new EffectComposer(window.renderer);
+  composer.addPass(renderScene);
+
+  const bloomPass = new UnrealBloomPass(
+    new THREE.Vector2(window.innerWidth, window.innerHeight),
+    0.7,
+    0.1,
+    1
+  );
+  composer.addPass(bloomPass);
+
   document.getElementById("3d_content").appendChild(window.renderer.domElement);
 
-  const gui = new DAT.GUI();
+  /* const gui = new DAT.GUI();
   const cubeFolder = gui.addFolder("Rotate around earth");
-  cubeFolder.open();
+  cubeFolder.open(); */
+
+  window.camera.cameraRotateAroundGlobe = true;
 
   var lastTimeStamp = 0;
-  let fetchTimeInSeconds = 10;
+  let fetchTimeInSeconds = 20;
   function mainLoop(nowTimestamp) {
     if (nowTimestamp - lastTimeStamp >= fetchTimeInSeconds * 1000) {
       lastTimeStamp = nowTimestamp;
       console.log(`${fetchTimeInSeconds} seconds passed`);
       planes.renderPlanes();
     }
+    if (window.camera.cameraRotateAroundGlobe) {
+      const rotationSpeed = 0.0001; // Adjust the rotation speed as desired
+      const globeCenter = new THREE.Vector3(0, 0, 0); // Center of the globe
+      const radius = 300;
+
+      const angle = rotationSpeed * (nowTimestamp - lastTimeStamp);
+      const cameraX = globeCenter.x + radius * Math.cos(angle);
+      const cameraZ = globeCenter.z + radius * Math.sin(angle);
+
+      window.camera.position.set(cameraX, 160, cameraZ);
+    }
 
     sun.rotateAroundOriginBaseOnTime(300);
     orbitControls.update();
+    TWEEN.update();
     requestAnimationFrame(mainLoop);
-    window.renderer.render(window.scene, window.camera);
+    composer.render();
+
+    // window.renderer.render(window.scene, window.camera);
   }
   mainLoop();
 }
 
 window.onload = main;
 window.onresize = updateAspectRatio;
-window.onmousemove = calculateMousePosition;
+window.addEventListener("mousemove", calculateMousePosition);
+window.addEventListener("mousemove", executeRaycastOnMove);
 window.onclick = executeRaycast;
 window.onkeydown = keyDownAction;
 window.onkeyup = keyUpAction;
