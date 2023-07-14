@@ -248,6 +248,7 @@ function displayData(data) {
   const verticalRate = document.getElementById("vertical-rate");
   const velocity = document.getElementById("velocity");
   const trueTrack = document.getElementById("true-track");
+  const onGround = document.getElementById("on-ground");
   const source = document.getElementById("source");
 
   icao.innerHTML = data[0];
@@ -263,6 +264,7 @@ function displayData(data) {
     : "N/A";
   velocity.innerHTML = data[9] + " m/s";
   trueTrack.innerHTML = data[10] + " &#176";
+  onGround.innerHTML = data[8];
   source.innerHTML = {
     0: "ADS-B",
 

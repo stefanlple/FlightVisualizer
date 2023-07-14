@@ -58,11 +58,9 @@ export default class Planes extends THREE.Group {
       aircraft.lookAt(0, 0, 0);
       aircraft.rotateZ(THREE.MathUtils.degToRad(orientation));
 
-      aircraft.material.color = new THREE.Color(
-        plane[9] < 1 ? 0x000000 : 0xff0000
-      );
+      aircraft.material.color = new THREE.Color(plane[8] ? 0xffffff : 0xff0000);
       aircraft.material.emissive = new THREE.Color(
-        plane[9] < 1 ? 0x000000 : 0xff0000
+        plane[8] ? 0xffffff : 0xff0000
       );
 
       /* aircraft.material.color = setColorScale(
