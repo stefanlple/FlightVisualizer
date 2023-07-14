@@ -16,7 +16,10 @@ export default class Globe extends THREE.Group {
     const globeRadius = 100;
     const globeGeometry = new THREE.SphereGeometry(globeRadius);
     const globeMaterial = new THREE.MeshLambertMaterial({
-      color: 0xffffff,
+      color: 0xbbbbbb,
+      emissive: 0xffffff,
+      emissiveIntensity: 0,
+      toneMapped: false,
       map: new THREE.TextureLoader().load(
         "./src/images/8081_earthmap10k.jpg",
         (texture) => {
