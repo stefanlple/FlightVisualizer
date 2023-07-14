@@ -57,7 +57,7 @@ export default class Aircraft extends THREE.Group {
     const material = new THREE.MeshStandardMaterial({
       color: 0xff0000,
       emissive: 0xff0000,
-      emissiveIntensity: 2,
+      emissiveIntensity: 10,
       toneMapped: false,
     });
 

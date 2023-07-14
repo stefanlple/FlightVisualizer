@@ -15,6 +15,7 @@ import Aircraft from "./objects/Aircraft";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
+import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 
 // Event functions
 import { updateAspectRatio } from "./eventfunctions/updateAspectRatio.js";
@@ -40,9 +41,34 @@ function main() {
   window.camera.position.set(100, 160, 220);
   window.camera.lookAt(0, 0, 0);
 
+  THREE.ColorManagement.enabled = true;
+
   window.renderer = new THREE.WebGLRenderer({ antialias: true });
   window.renderer.setSize(window.innerWidth, window.innerHeight);
   window.renderer.setClearColor();
+
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+
+  const target = new THREE.WebGLRenderTarget(
+    window.innerWidth,
+    window.innerHeight,
+    {
+      type: THREE.HalfFloatType,
+      format: THREE.RGBAFormat,
+    }
+  );
+  target.samples = 8;
+
+  const composer = new EffectComposer(window.renderer, target);
+  composer.addPass(new RenderPass(window.scene, window.camera));
+  composer.addPass(
+    new UnrealBloomPass(
+      new THREE.Vector2(window.innerWidth, window.innerHeight),
+      1,
+      1,
+      1
+    )
+  );
 
   const orbitControls = new OrbitControls(
     window.camera,
@@ -78,8 +104,8 @@ function main() {
   const planes = new Planes();
   window.scene.add(planes);
 
-  /* const aircraft = new Aircraft();
-  window.scene.add(aircraft); */
+  const aircraft = new Aircraft();
+  window.scene.add(aircraft);
 
   const ball = new THREE.Mesh(
     new THREE.SphereGeometry(2),
@@ -90,18 +116,6 @@ function main() {
   ball.translateZ(latLonToCart(34.052235, -118.243683, 0, 102)[2]);
   ball.name = "LOS ANGELES";
   window.scene.add(ball);
-
-  const renderScene = new RenderPass(window.scene, window.camera);
-  const composer = new EffectComposer(window.renderer);
-  composer.addPass(renderScene);
-
-  const bloomPass = new UnrealBloomPass(
-    new THREE.Vector2(window.innerWidth, window.innerHeight),
-    0.7,
-    0.1,
-    1
-  );
-  composer.addPass(bloomPass);
 
   document.getElementById("3d_content").appendChild(window.renderer.domElement);
 
@@ -135,6 +149,7 @@ function main() {
     orbitControls.update();
     TWEEN.update();
     requestAnimationFrame(mainLoop);
+
     composer.render();
 
     // window.renderer.render(window.scene, window.camera);

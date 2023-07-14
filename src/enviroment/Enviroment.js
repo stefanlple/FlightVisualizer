@@ -10,7 +10,7 @@ export default class Enviroment extends THREE.Group {
 
   addParts() {
     const ambientLight = new THREE.AmbientLight(0xffffff);
-    ambientLight.intensity = 0.15;
+    ambientLight.intensity = 0.25;
     this.add(ambientLight);
   }
 }

@@ -57,13 +57,26 @@ export default class Planes extends THREE.Group {
 
       aircraft.lookAt(0, 0, 0);
       aircraft.rotateZ(THREE.MathUtils.degToRad(orientation));
-      //aircraft.material.color.setHex(0xff0000);
 
-      aircraft.material.color = setColorScale(
+      aircraft.material.color = new THREE.Color(
+        plane[9] < 1 ? 0x000000 : 0xff0000
+      );
+      aircraft.material.emissive = new THREE.Color(
+        plane[9] < 1 ? 0x000000 : 0xff0000
+      );
+
+      /* aircraft.material.color = setColorScale(
         plane[9],
         minVelocity,
         maxVelocity
       );
+      console.log(setColorScale(plane[9], minVelocity, maxVelocity));
+      aircraft.material.emissive = setColorScale(
+        plane[9],
+        minVelocity,
+        maxVelocity
+      ); */
+
       //setHSV(aircraft, plane[9]);
       this.add(aircraft);
       this.plane3dObjects.push(aircraft);
