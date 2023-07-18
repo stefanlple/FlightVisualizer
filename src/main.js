@@ -10,6 +10,7 @@ import Enviroment from "./enviroment/Enviroment";
 import Sun from "./objects/Sun";
 import Planes from "./objects/Planes";
 import Aircraft from "./objects/Aircraft";
+import Airports from "./objects/Airports";
 
 //Utilities
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
@@ -47,7 +48,7 @@ function main() {
   window.renderer.setSize(window.innerWidth, window.innerHeight);
   window.renderer.setClearColor();
 
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  //renderer.toneMapping = THREE.ACESFilmicToneMapping;
 
   const target = new THREE.WebGLRenderTarget(
     window.innerWidth,
@@ -64,8 +65,8 @@ function main() {
   composer.addPass(
     new UnrealBloomPass(
       new THREE.Vector2(window.innerWidth, window.innerHeight),
-      1,
-      1,
+      0.5,
+      3,
       1
     )
   );
@@ -101,11 +102,14 @@ function main() {
   const sun = new Sun();
   window.scene.add(sun);
 
-  const planes = new Planes();
-  window.scene.add(planes);
+  /*  const planes = new Planes();
+  window.scene.add(planes); */
 
   const aircraft = new Aircraft();
   window.scene.add(aircraft);
+
+  const airports = new Airports();
+  window.scene.add(airports);
 
   const ball = new THREE.Mesh(
     new THREE.SphereGeometry(2),
@@ -126,7 +130,7 @@ function main() {
   window.camera.cameraRotateAroundGlobe = true;
 
   var lastTimeStamp = 0;
-  let fetchTimeInSeconds = 20;
+  let fetchTimeInSeconds = 30;
   function mainLoop(nowTimestamp) {
     if (nowTimestamp - lastTimeStamp >= fetchTimeInSeconds * 1000) {
       lastTimeStamp = nowTimestamp;
@@ -154,6 +158,7 @@ function main() {
 
     // window.renderer.render(window.scene, window.camera);
   }
+
   mainLoop();
 }
 

@@ -109,7 +109,6 @@ async function fetchTrackOnIcao(icao24) {
   );
   track.name = "track";
   window.scene.add(track);
-  console.log(window.scene);
   drawGraphAndPlane(pathJson, track);
 }
 
@@ -241,6 +240,7 @@ function displayData(data) {
 
   const icao = document.getElementById("icao");
   const callSign = document.getElementById("call-sign");
+  const originCountry = document.getElementById("origin-country");
   const longitude = document.getElementById("longitude");
   const latitude = document.getElementById("latitude");
   const baromAltitude = document.getElementById("barom-altitude");
@@ -253,6 +253,7 @@ function displayData(data) {
 
   icao.innerHTML = data[0];
   callSign.innerHTML = data[1];
+  originCountry.innerHTML = data[2];
   longitude.innerHTML = data[5] + " &#176";
   latitude.innerHTML = data[6] + " &#176";
   baromAltitude.innerHTML =

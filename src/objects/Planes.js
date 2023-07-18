@@ -48,7 +48,9 @@ export default class Planes extends THREE.Group {
 
     for (const plane of this.planeObjects) {
       const aircraft = new Aircraft();
-      const [x, y, z] = latLonToCart(plane[6], plane[5], plane[7], globeRadius);
+      const [x, y, z] = plane[8]
+        ? latLonToCart(plane[6], plane[5], 0, 100)
+        : latLonToCart(plane[6], plane[5], plane[7], globeRadius);
       const orientation = plane[10];
       aircraft.translateX(x);
       aircraft.translateY(y);
