@@ -1,3 +1,130 @@
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
+}
+body {
+  line-height: 1;
+}
+ol,
+ul {
+  list-style: none;
+}
+blockquote,
+q {
+  quotes: none;
+}
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: "";
+  content: none;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* my code */
+
 :root {
   --clr-neon: #4d74c9;
   --clr-bg: #060a13;
@@ -146,4 +273,179 @@ body {
   padding: 6px;
   pointer-events: none;
   font-size: 14px;
+}
+
+/* filter functions */
+.filter {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.filter-options {
+  list-style-type: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 100%;
+}
+
+.filter-options > li {
+  width: 15px;
+  height: 15px;
+  background-color: red;
+  margin: 1em 0;
+  display: flex;
+  align-items: center;
+}
+
+.filter-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+}
+.filter-bar-item {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  border: 1px solid;
+  padding: 0 10px;
+}
+
+.cross-icon {
+  width: 20px;
+  height: 20px;
+  position: relative;
+  border: 1px solid white;
+}
+
+.cross-icon::before,
+.cross-icon::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 60%;
+  width: 2px;
+  background-color: #fff;
+}
+
+.cross-icon::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.cross-icon::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.cross-icon:hover,
+.cross-icon:hover::before,
+.cross-icon:hover::after {
+  opacity: 0.5;
+}
+
+.category-label {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-right: 10px;
+  padding-left: 10px;
+  border-right: 0.5px solid;
+  border-left: 0.5px solid;
+}
+
+.filter-input {
+  width: 100px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid white;
+  outline: none;
+  color: white;
+}
+.filter-input:focus {
+  border-bottom: 3px solid white;
+}
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+}
+
+.min-max-slider {
+  position: relative;
+  width: 100px;
+  text-align: center;
+  font-size: 12px;
+}
+
+.min-max-slider > label {
+  display: none;
+}
+span.value {
+  height: 1.7em;
+  font-weight: bold;
+  display: inline-block;
+}
+span.value.lower,
+span.value.upper {
+  height: 12px;
+  font-size: smaller;
+}
+span.value.lower::before {
+  display: inline-block;
+}
+span.value.upper::before {
+  content: "-";
+  display: inline-block;
+  margin-left: 0.4em;
+  margin-right: 0.4em;
+}
+.min-max-slider > .legend {
+  display: flex;
+  justify-content: space-between;
+}
+.min-max-slider > .legend > * {
+  font-size: 7px;
+  opacity: 0.5;
+}
+.min-max-slider > input {
+  cursor: pointer;
+  position: absolute;
+}
+
+/* webkit specific styling */
+.min-max-slider > input {
+  -webkit-appearance: none;
+  outline: none !important;
+  background: transparent;
+  background-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    transparent 30%,
+    silver 30%,
+    silver 60%,
+    transparent 60%,
+    transparent 100%
+  );
+}
+.min-max-slider > input::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Override default look */
+  appearance: none;
+  width: 14px; /* Set a specific slider handle width */
+  height: 14px; /* Slider handle height */
+  background: #eee; /* Green background */
+  cursor: pointer; /* Cursor on hover */
+  border: 1px solid gray;
+  border-radius: 100%;
+}
+.min-max-slider > input::-webkit-slider-runnable-track {
+  cursor: pointer;
 }
