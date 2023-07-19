@@ -143,13 +143,12 @@ body {
   display: grid;
   place-items: center;
   background: var(--clr-bg);
-  font-family: "Balsamiq Sans";
-  color: var(--clr-neon);
+  color: white;
 }
 
 #startButton {
   font-size: 4rem;
-
+  font-family: "Balsamiq Sans";
   display: inline-block;
   position: relative;
   cursor: pointer;
@@ -278,36 +277,95 @@ body {
 /* filter functions */
 .filter {
   position: absolute;
+  width: 286px;
   top: 10px;
   right: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 10px;
+  border: 2px solid white;
+  background-color: rgba(0, 0, 0, 0.35);
 }
 
 .filter-options {
   list-style-type: none;
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-between;
   width: 100%;
 }
 
 .filter-options > li {
-  width: 15px;
-  height: 15px;
+  color: white;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
   background-color: red;
   margin: 1em 0;
   display: flex;
   align-items: center;
 }
 
+.filter-tooltip {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.tooltip-text {
+  font-size: 9px;
+  width: 80px;
+  visibility: hidden;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  border-radius: 4px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  top: calc(100% + 5px);
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.filter-tooltip:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+
+.hidden {
+  display: none !important;
+}
+
 .filter-list {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  margin: 0;
+  margin: 0 0 12px 0;
 }
+
+.filter-buttons {
+  display: flex;
+  gap: 30px;
+}
+
+.filter-buttons > button {
+  width: 100px;
+  background-color: transparent;
+  color: white;
+  border: none;
+  border: 1px solid white;
+  border-radius: 5%;
+  padding: 6px;
+}
+
+.filter-buttons > button:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
 .filter-bar-item {
   height: 40px;
   display: flex;
@@ -351,6 +409,8 @@ body {
 }
 
 .category-label {
+  font-size: smaller;
+  width: 80px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -386,9 +446,6 @@ body {
   font-size: 12px;
 }
 
-.min-max-slider > label {
-  display: none;
-}
 span.value {
   height: 1.7em;
   font-weight: bold;
@@ -397,7 +454,7 @@ span.value {
 span.value.lower,
 span.value.upper {
   height: 12px;
-  font-size: smaller;
+  font-size: 9px;
 }
 span.value.lower::before {
   display: inline-block;
