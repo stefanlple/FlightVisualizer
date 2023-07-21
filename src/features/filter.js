@@ -7,7 +7,7 @@ const setStylesOnElement = function (element, styles) {
 const defaultStyling = { "background-color": "red" };
 const selectedStyling = { "background-color": "blue" };
 
-const filterPair = {
+export const filterPair = {
   'document.querySelector(".filter-callsign")': document.querySelector(
     ".filter-callsign-item"
   ),
@@ -19,8 +19,9 @@ const filterPair = {
   'document.querySelector(".filter-altitude")': document.querySelector(
     ".filter-altitude-item"
   ),
-  'document.querySelector(".filter-speed")':
-    document.querySelector(".filter-speed-item"),
+  'document.querySelector(".filter-velocity")': document.querySelector(
+    ".filter-velocity-item"
+  ),
   'document.querySelector(".filter-vertical-rate")': document.querySelector(
     ".filter-vertical-rate-item"
   ),
@@ -29,7 +30,7 @@ const filterPair = {
   ),
 };
 
-const getVisible = (element) => {
+export const getVisible = (element) => {
   return (
     window
       .getComputedStyle(element, null)

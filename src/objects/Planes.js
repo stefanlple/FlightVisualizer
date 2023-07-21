@@ -3,8 +3,6 @@ import base64 from "base64-js";
 
 import { latLonToCart } from "../utility/latLngToCartSystem";
 import { removeObject3D } from "../utility/removeObject3D";
-import { removeTrack } from "../utility/removeTrack";
-import { setHSV, hueForSpeed, setColorScale } from "../utility/hue";
 
 import { username, password } from "../../info";
 
@@ -17,13 +15,190 @@ export default class Planes extends THREE.Group {
     this.plane3dObjects = [];
     this.planeObjects = [];
     this.fetchURL = "https://opensky-network.org/api/states/all";
+
+    this.filterBarItemList = [];
+
+    this.defaultFilterParameters = {
+      CALLSIGN: "",
+      ICAO: "",
+      COUNTRY: "",
+      ALTITUDE: {
+        min: 0,
+        max: 19500,
+      },
+      VELOCITY: {
+        min: 0,
+        max: 1300,
+      },
+      "VERTICAL-RATE": {
+        min: -30,
+        max: 30,
+      },
+      "ON-GROUND": null,
+    };
+
+    this.filterParameters = {
+      CALLSIGN: "",
+      ICAO: "",
+      COUNTRY: "",
+      ALTITUDE: {
+        min: 0,
+        max: 19500,
+      },
+      VELOCITY: {
+        min: 0,
+        max: 1300,
+      },
+      "VERTICAL-RATE": {
+        min: -30,
+        max: 30,
+      },
+      "ON-GROUND": null,
+    };
+
+    this.filterIndexMap = {
+      CALLSIGN: 1,
+      ICAO: 0,
+      COUNTRY: 2,
+      ALTITUDE: 7,
+      VELOCITY: 9,
+      "VERTICAL-RATE": 11,
+      "ON-GROUND": 8,
+    };
+
+    this.addEventListenerToButtons();
+    this.getListItemNodes();
+    this.manageFilterParameters();
     this.renderPlanes();
+  }
+
+  addEventListenerToButtons() {
+    document.querySelector(".reset-button").addEventListener("click", () => {
+      {
+        console.log("filter-parameters", this.filterParameters);
+        this.filterParameters = { ...this.defaultFilterParameters };
+        this.renderPlanes();
+      }
+    });
+  }
+
+  getListItemNodes() {
+    this.filterBarItemList = document.querySelectorAll(".filter-bar-item");
+  }
+
+  manageFilterParameters() {
+    const updateFilterParameters = () => {
+      this.filterBarItemList.forEach((e) => {
+        const classname = e.classList[1]
+          .replace("filter-", "")
+          .replace("-item", "")
+          .toUpperCase();
+
+        const isHidden = e.classList.contains("hidden");
+
+        switch (classname) {
+          case "CALLSIGN":
+          case "ICAO":
+          case "COUNTRY":
+            this.filterParameters[classname] = isHidden
+              ? this.defaultFilterParameters[classname]
+              : e.children[2].children[0].value;
+            break;
+          case "ALTITUDE":
+          case "VELOCITY":
+          case "VERTICAL-RATE":
+            if (isHidden) {
+              this.filterParameters[classname].min =
+                this.defaultFilterParameters[classname].min;
+              this.filterParameters[classname].max =
+                this.defaultFilterParameters[classname].max;
+            } else {
+              this.filterParameters[classname].min = Math.round(
+                Number(e.querySelector("#min").value)
+              );
+              this.filterParameters[classname].max = Math.round(
+                Number(e.querySelector("#max").value)
+              );
+            }
+            break;
+          case "ON-GROUND":
+            this.filterParameters[classname] = isHidden
+              ? this.defaultFilterParameters[classname]
+              : e.children[2].children[0].checked;
+            break;
+        }
+      });
+    };
+
+    document.querySelector(".apply-button").addEventListener("click", () => {
+      updateFilterParameters();
+      this.renderPlanes();
+      console.log("filter-parameters", this.filterParameters);
+    });
+  }
+
+  checkPlaneOnParameter(filterParameters, plane) {
+    let filter = true;
+    /* console.log("current planes"); */
+    for (const [key, value] of Object.entries(filterParameters)) {
+      /* console.log(
+        "check if parameters match:",
+        filterParameters[key] || "undefined",
+        "&&",
+        plane[this.filterIndexMap[key]]
+      ); */
+
+      const checkNotBetween = (x, min, max) => !(x >= min && x <= max);
+      switch (key) {
+        case "CALLSIGN":
+          if (filterParameters[key] !== "") {
+            if (
+              filterParameters[key] !== plane[this.filterIndexMap[key]].trim()
+            ) {
+              filter = false;
+              console.log("HERERERE");
+            }
+          }
+          break;
+        case "ICAO":
+        case "COUNTRY":
+          if (filterParameters[key] !== "") {
+            if (filterParameters[key] !== plane[this.filterIndexMap[key]]) {
+              filter = false;
+            }
+          }
+          break;
+        case "ALTITUDE":
+        case "VELOCITY":
+        case "VERTICAL-RATE":
+          if (
+            checkNotBetween(
+              plane[this.filterIndexMap[key]],
+              filterParameters[key].min,
+              filterParameters[key].max
+            )
+          ) {
+            filter = false;
+          }
+          break;
+        case "ON-GROUND":
+          if (filterParameters[key] !== null) {
+            if (filterParameters[key] !== plane[this.filterIndexMap[key]]) {
+              filter = false;
+            }
+          }
+          break;
+      }
+    }
+
+    return filter;
   }
 
   async renderPlanes() {
     //plus two to lift the planes up
     const globeRadius = 102;
 
+    //remove all previous planes
     this.plane3dObjects.forEach((e, i) => {
       removeObject3D(e);
       window.scene.remove(e);
@@ -31,7 +206,7 @@ export default class Planes extends THREE.Group {
     this.plane3dObjects = [];
     this.planeObjects = [];
 
-    console.log({
+    console.log("remove previous planes", {
       "planes objecs": this.planeObjects.length,
       "planes 3d objecs": this.plane3dObjects.length,
       children: this.children.length,
@@ -39,33 +214,38 @@ export default class Planes extends THREE.Group {
 
     await this.fetchPlaneObjects();
 
+    //get min and max velocity
     const velocityArray = this.planeObjects.map((e) => e[9]);
 
     const maxVelocity = Math.max.apply(null, velocityArray);
     const minVelocity = Math.min.apply(null, velocityArray);
 
-    console.log(minVelocity, maxVelocity);
+    console.log("min velocity", minVelocity, "maxVelocity", maxVelocity);
 
     for (const plane of this.planeObjects) {
-      const aircraft = new Aircraft();
-      const [x, y, z] = plane[8]
-        ? latLonToCart(plane[6], plane[5], 0, 100)
-        : latLonToCart(plane[6], plane[5], plane[7], globeRadius);
-      const orientation = plane[10];
-      aircraft.translateX(x);
-      aircraft.translateY(y);
-      aircraft.translateZ(z);
-      aircraft.icao24 = plane[0];
+      //filter out planes base on parameters
+      if (this.checkPlaneOnParameter(this.filterParameters, plane)) {
+        const aircraft = new Aircraft();
+        const [x, y, z] = plane[8]
+          ? latLonToCart(plane[6], plane[5], 0, 100)
+          : latLonToCart(plane[6], plane[5], plane[7], globeRadius);
+        const orientation = plane[10];
+        aircraft.translateX(x);
+        aircraft.translateY(y);
+        aircraft.translateZ(z);
+        aircraft.icao24 = plane[0];
 
-      aircraft.lookAt(0, 0, 0);
-      aircraft.rotateZ(THREE.MathUtils.degToRad(orientation));
+        aircraft.lookAt(0, 0, 0);
+        aircraft.rotateZ(THREE.MathUtils.degToRad(orientation));
 
-      aircraft.material.color = new THREE.Color(plane[8] ? 0xffffff : 0xff0000);
-      aircraft.material.emissive = new THREE.Color(
-        plane[8] ? 0xffffff : 0xff0000
-      );
+        aircraft.material.color = new THREE.Color(
+          plane[8] ? 0xffffff : 0xff0000
+        );
+        aircraft.material.emissive = new THREE.Color(
+          plane[8] ? 0xffffff : 0xff0000
+        );
 
-      /* aircraft.material.color = setColorScale(
+        /* aircraft.material.color = setColorScale(
         plane[9],
         minVelocity,
         maxVelocity
@@ -77,14 +257,14 @@ export default class Planes extends THREE.Group {
         maxVelocity
       ); */
 
-      //setHSV(aircraft, plane[9]);
-      this.add(aircraft);
-      this.plane3dObjects.push(aircraft);
+        this.add(aircraft);
+        this.plane3dObjects.push(aircraft);
+      }
     }
 
     //removeTrack();
 
-    console.log({
+    console.log("after render new planes", {
       "planes objecs": this.planeObjects.length,
       "planes 3d objecs": this.plane3dObjects.length,
       children: this.children.length,

@@ -45,8 +45,8 @@ function draw(slider, splitvalue) {
   /* write value and labels */
   max.value = max.getAttribute("data-value");
   min.value = min.getAttribute("data-value");
-  lower.innerHTML = min.getAttribute("data-value") + " " + units;
-  upper.innerHTML = max.getAttribute("data-value") + " " + units;
+  lower.innerHTML = Math.round(min.getAttribute("data-value")) + " " + units;
+  upper.innerHTML = Math.round(max.getAttribute("data-value")) + " " + units;
 }
 
 export function init(slider) {
