@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import * as TWEEN from "@tweenjs/tween.js";
 import * as DAT from "dat.gui";
+import Stats from "stats-js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 // Own modules
@@ -16,16 +17,11 @@ import Airports from "./objects/Airports";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
-import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass.js";
 
 // Event functions
 import { updateAspectRatio } from "./eventfunctions/updateAspectRatio.js";
 import { calculateMousePosition } from "./eventfunctions/calculateMousePosition.js";
 import { executeRaycast } from "./eventfunctions/executeRaycast.js";
-import {
-  keyDownAction,
-  keyUpAction,
-} from "./eventfunctions/executeKeyAction.js";
 import { latLonToCart } from "./utility/latLngToCartSystem";
 import { executeRaycastOnMove } from "./eventfunctions/executeRaycastOnMove";
 
@@ -95,15 +91,13 @@ function main() {
   window.scene.add(stars);
 
   const globe = new Globe();
-  /* globe.rotateX(0.40840704496); //23.4 degrees
-  globe.rotateY((-3 / 5) * Math.PI); //adjust rotation to the sun */
   window.scene.add(globe);
+
+  const planes = new Planes();
+  window.scene.add(planes);
 
   const sun = new Sun();
   window.scene.add(sun);
-
-  /*  const planes = new Planes();
-  window.scene.add(planes); */
 
   const aircraft = new Aircraft();
   window.scene.add(aircraft);
@@ -127,11 +121,16 @@ function main() {
   const cubeFolder = gui.addFolder("Rotate around earth");
   cubeFolder.open(); */
 
+  var stats = new Stats();
+  stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
+  document.body.appendChild(stats.dom);
+
   window.camera.cameraRotateAroundGlobe = true;
 
   var lastTimeStamp = 0;
   let fetchTimeInSeconds = 30;
   function mainLoop(nowTimestamp) {
+    stats.begin();
     if (nowTimestamp - lastTimeStamp >= fetchTimeInSeconds * 1000) {
       lastTimeStamp = nowTimestamp;
       console.log(`${fetchTimeInSeconds} seconds passed`);
@@ -152,11 +151,13 @@ function main() {
     sun.rotateAroundOriginBaseOnTime(300);
     orbitControls.update();
     TWEEN.update();
+
     requestAnimationFrame(mainLoop);
 
     composer.render();
 
-    // window.renderer.render(window.scene, window.camera);
+    //  window.renderer.render(window.scene, window.camera);
+    stats.end();
   }
 
   mainLoop();
@@ -167,5 +168,3 @@ window.onresize = updateAspectRatio;
 window.addEventListener("mousemove", calculateMousePosition);
 window.addEventListener("mousemove", executeRaycastOnMove);
 window.onclick = executeRaycast;
-window.onkeydown = keyDownAction;
-window.onkeyup = keyUpAction;

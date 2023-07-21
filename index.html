@@ -73,14 +73,14 @@
         <li class="filter-tooltip filter-icao" data-tooltip="ICAO"></li>
         <li class="filter-tooltip filter-country" data-tooltip="COUNTRY"></li>
         <li class="filter-tooltip filter-altitude" data-tooltip="ALTITUDE"></li>
-        <li class="filter-tooltip filter-speed" data-tooltip="SPEED"></li>
+        <li class="filter-tooltip filter-velocity" data-tooltip="VELOCITY"></li>
         <li
           class="filter-tooltip filter-vertical-rate"
-          data-tooltip="VERTICAL RATE"
+          data-tooltip="VERTICAL-RATE"
         ></li>
         <li
           class="filter-tooltip filter-on-ground"
-          data-tooltip="ON GROUND"
+          data-tooltip="ON-GROUND"
         ></li>
       </ul>
 
@@ -97,6 +97,7 @@
               id="filter-input"
               name="filter-input"
               type="text"
+              autocomplete="off"
             />
           </div>
         </li>
@@ -113,6 +114,7 @@
               id="filter-input"
               name="filter-input"
               type="text"
+              autocomplete="off"
             />
           </div>
         </li>
@@ -129,6 +131,7 @@
               id="filter-input"
               name="filter-input"
               type="text"
+              autocomplete="off"
             />
           </div>
         </li>
@@ -164,7 +167,7 @@
         </li>
 
         <li
-          class="filter-bar-item filter-speed-item hidden"
+          class="filter-bar-item filter-velocity-item hidden"
           style="color: white"
         >
           <div class="cross-icon"></div>
@@ -236,8 +239,7 @@
       </ul>
 
       <div class="filter-buttons">
-        <button type="button">APPLY</button>
-
+        <button type="button" class="apply-button">APPLY</button>
         <button type="button" class="reset-button">RESET</button>
       </div>
     </div>
