@@ -162,9 +162,28 @@ function drawGraphAndPlane(dataPoints, track) {
   const yAxis = D3.axisLeft(yScale);
 
   // Append x and y axes to the SVG container
-  svg.append("g").attr("transform", `translate(0,${height})`).call(xAxis);
+  svg
+    .append("g")
+    .attr("transform", `translate(0,${height})`)
+    .call(xAxis)
+    .append("text") // X-axis label
+    .attr("x", width / 2)
+    .attr("y", margin.bottom)
+    .attr("fill", "#fff")
+    .attr("text-anchor", "middle")
+    .text("Time");
 
-  svg.append("g").call(yAxis);
+  svg
+    .append("g")
+    .call(yAxis)
+    .append("text") // Y-axis label
+    .attr("transform", "rotate(-90)")
+    .attr("y", -margin.left)
+    .attr("x", -height / 2)
+    .attr("dy", "1em")
+    .attr("fill", "#fff")
+    .attr("text-anchor", "middle")
+    .text("Altitude (meters)");
 
   // Create a line generator for the altitude path
   const line = D3.line()
@@ -211,6 +230,10 @@ function drawGraphAndPlane(dataPoints, track) {
       );
       if (track.children.length === 0) {
         const aircraft = new Aircraft();
+
+        aircraft.material.color = new THREE.Color(0x00ff00);
+        aircraft.material.emissive = new THREE.Color(0x00ff00);
+
         aircraft.position.set(x, y, z);
         aircraft.lookAt(0, 0, 0);
         aircraft.rotateZ(THREE.MathUtils.degToRad(d.position.trueTrack));
@@ -256,13 +279,9 @@ function displayData(data) {
   originCountry.innerHTML = data[2];
   longitude.innerHTML = data[5] + " &#176";
   latitude.innerHTML = data[6] + " &#176";
-  baromAltitude.innerHTML =
-    Math.round(data[7]) + " ft " + `(${Math.round(data[7] * 0.304)} m)`;
-  geoAltitude.innerHTML =
-    Math.round(data[13]) + " ft " + `(${Math.round(data[13] * 0.304)} m)`;
-  verticalRate.innerHTML = !!data[11]
-    ? data[11] * 196.85 + " ft/min " + `(${data[11]} m/s)`
-    : "N/A";
+  baromAltitude.innerHTML = Math.round(data[7]) + " meters";
+  geoAltitude.innerHTML = Math.round(data[13]) + " meters";
+  verticalRate.innerHTML = !!data[11] ? `${data[11]} m/s` : "N/A";
   velocity.innerHTML = data[9] + " m/s";
   trueTrack.innerHTML = data[10] + " &#176";
   onGround.innerHTML = data[8];
