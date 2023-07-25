@@ -21,7 +21,7 @@ import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPa
 // Event functions
 import { updateAspectRatio } from "./eventfunctions/updateAspectRatio.js";
 import { calculateMousePosition } from "./eventfunctions/calculateMousePosition.js";
-import { executeRaycast } from "./eventfunctions/executeRaycast.js";
+import { executeRaycastOnClick } from "./eventfunctions/executeRaycastOnClick.js";
 import { latLonToCart } from "./utility/latLngToCartSystem";
 import { executeRaycastOnMove } from "./eventfunctions/executeRaycastOnMove";
 
@@ -124,6 +124,7 @@ function main() {
   var stats = new Stats();
   stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
   document.body.appendChild(stats.dom);
+  stats.domElement.style.top = "50%";
 
   window.camera.cameraRotateAroundGlobe = true;
 
@@ -167,4 +168,4 @@ window.onload = main;
 window.onresize = updateAspectRatio;
 window.addEventListener("mousemove", calculateMousePosition);
 window.addEventListener("mousemove", executeRaycastOnMove);
-window.onclick = executeRaycast;
+window.onclick = executeRaycastOnClick;

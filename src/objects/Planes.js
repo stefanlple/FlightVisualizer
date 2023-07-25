@@ -3,6 +3,7 @@ import base64 from "base64-js";
 
 import { latLonToCart } from "../utility/latLngToCartSystem";
 import { removeObject3D } from "../utility/removeObject3D";
+import { generateSubClusterListItems } from "../features/cluster";
 
 import { username, password } from "../../info";
 
@@ -66,10 +67,177 @@ export default class Planes extends THREE.Group {
       "ON-GROUND": 8,
     };
 
-    this.addEventListenerToButtons();
-    this.getListItemNodes();
-    this.manageFilterParameters();
-    this.renderPlanes();
+    this.countrySet = new Set();
+
+    this.continentsMap = {
+      "North America": [
+        "United States",
+        "Mexico",
+        "Canada",
+        "Dominican Republic",
+        "Bahamas",
+        "Guatemala",
+        "Trinidad and Tobago",
+        "Panama",
+        "Saint Vincent and the Grenadines",
+        "Antigua and Barbuda",
+      ],
+      "South America": [
+        "Chile",
+        "Brazil",
+        "Argentina",
+        "Guyana",
+        "Colombia",
+        "Ecuador",
+        "Bolivia",
+        "Venezuela",
+        "Suriname",
+        "Peru",
+      ],
+      Europe: [
+        "Switzerland",
+        "France",
+        "Germany",
+        "Estonia",
+        "Portugal",
+        "Austria",
+        "United Kingdom",
+        "Norway",
+        "Sweden",
+        "Poland",
+        "Hungary",
+        "Spain",
+        "Serbia",
+        "Greece",
+        "Romania",
+        "Bulgaria",
+        "Montenegro",
+        "Kingdom of the Netherlands",
+        "Italy",
+        "Slovakia",
+        "Iceland",
+        "Russian Federation",
+        "Finland",
+        "San Marino",
+        "Belgium",
+        "Denmark",
+        "Ireland",
+        "Slovenia",
+        "Croatia",
+        "Luxembourg",
+        "Ukraine",
+        "Albania",
+        "Czech Republic",
+        "Latvia",
+        "Malta",
+        "Lithuania",
+        "Belarus",
+        "Republic of Moldova",
+        "Monaco",
+      ],
+      Asia: [
+        "Thailand",
+        "Indonesia",
+        "Saudi Arabia",
+        "Japan",
+        "India",
+        "Turkey",
+        "Philippines",
+        "Jordan",
+        "Singapore",
+        "China",
+        "Bangladesh",
+        "Israel",
+        "United Arab Emirates",
+        "Mongolia",
+        "Pakistan",
+        "Oman",
+        "Sri Lanka",
+        "Viet Nam",
+        "Malaysia",
+        "Kazakhstan",
+        "Kuwait",
+        "Cyprus",
+        "Islamic Republic of Iran",
+        "Azerbaijan",
+        "Bahrain",
+        "Afghanistan",
+        "Lebanon",
+        "Republic of Korea",
+        "Taiwan",
+        "Georgia",
+        "Qatar",
+        "Uzbekistan",
+        "Lao People's Democratic Republic",
+        "Iraq",
+        "Myanmar",
+        "Nepal",
+        "Syrian Arab Republic",
+        "Kyrgyzstan",
+        "Brunei Darussalam",
+        "Turkmenistan",
+        "Armenia",
+        "Cambodia",
+        "Bhutan",
+      ],
+      Africa: [
+        "South Africa",
+        "Tunisia",
+        "Morocco",
+        "Algeria",
+        "Libyan Arab Jamahiriya",
+        "Mauritius",
+        "Egypt",
+        "Ethiopia",
+        "Rwanda",
+        "Cape Verde",
+        "Kenya",
+        "Nigeria",
+        "Angola",
+        "Senegal",
+        "Uganda",
+        "Gambia",
+        "Botswana",
+      ],
+      Oceania: [
+        "Australia",
+        "New Zealand",
+        "Fiji",
+        "Papua New Guinea",
+        "Solomon Islands",
+        "Vanuatu",
+      ],
+    };
+
+    //ON START
+    (async () => {
+      this.addEventListenerToButtons();
+      this.getListItemNodes();
+      this.manageFilterParameters();
+      await this.renderPlanes();
+
+      generateSubClusterListItems(this.countrySet);
+
+      //only for dev
+      function findElementsNotInArray(arr1, arr2) {
+        const elementsNotInArr1 = arr2.filter(
+          (element) => !arr1.includes(element)
+        );
+        console.log("PLEASE ADD THIS TO COUNTRIES MAP", elementsNotInArr1);
+      }
+
+      findElementsNotInArray(
+        (() => {
+          const continents = Object.values(this.continentsMap);
+          const mergedArray = continents.reduce(
+            (acc, countries) => [...acc, ...countries],
+            []
+          );
+          return mergedArray;
+        })(),
+        Array.from(this.countrySet)
+      );
+    })(this);
   }
 
   addEventListenerToButtons() {
@@ -156,7 +324,6 @@ export default class Planes extends THREE.Group {
               filterParameters[key] !== plane[this.filterIndexMap[key]].trim()
             ) {
               filter = false;
-              console.log("HERERERE");
             }
           }
           break;
@@ -223,6 +390,9 @@ export default class Planes extends THREE.Group {
     console.log("min velocity", minVelocity, "maxVelocity", maxVelocity);
 
     for (const plane of this.planeObjects) {
+      //update country set
+      this.updateCountrySet(this.countrySet, plane[2]);
+
       //filter out planes base on parameters
       if (this.checkPlaneOnParameter(this.filterParameters, plane)) {
         const aircraft = new Aircraft();
@@ -261,7 +431,6 @@ export default class Planes extends THREE.Group {
         this.plane3dObjects.push(aircraft);
       }
     }
-
     //removeTrack();
 
     console.log("after render new planes", {
@@ -284,7 +453,11 @@ export default class Planes extends THREE.Group {
 
     const jsonData = await response.json();
     this.planeObjects = jsonData.states;
-    /* console.log(this.planeObjects[0]);
-    console.log("after fetch", this.planeObjects.length); */
+  }
+
+  updateCountrySet(set, country) {
+    if (country !== "") {
+      set.add(country);
+    }
   }
 }

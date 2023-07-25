@@ -16,7 +16,7 @@ import Aircraft from "../objects/Aircraft";
 
 window.raycaster = new THREE.Raycaster();
 
-export async function executeRaycast() {
+export async function executeRaycastOnClick() {
   //raycast
   window.raycaster.setFromCamera(window.mousePosition, window.camera);
   let intersects = window.raycaster.intersectObject(window.scene, true);
@@ -24,38 +24,41 @@ export async function executeRaycast() {
   if (intersects.length > 0) {
     let firstHit = intersects[0].object;
 
-    const object = findObjectByName(firstHit, "aircraft");
+    const aircraft = findObjectByName(firstHit, "aircraft");
 
-    if (object?.icao24) {
-      new TWEEN.Tween(window.camera)
-        .to(
-          {
-            position: calculateCameraPosition(
-              new THREE.Vector3(0, 0, 0),
-              object.position,
-              20
-            ),
-          },
-          1300
-        )
-        .easing(TWEEN.Easing.Sinusoidal.Out)
-        .onStart(() => {
-          window.orbitcontrols.enabled = false;
-          window.camera.cameraRotateAroundGlobe = false;
-        })
-        .onComplete(() => {
-          window.orbitcontrols.enabled = true;
-        })
-        .start();
+    const airport = findObjectByName(firstHit, "airport");
 
-      const icao24 = object.icao24;
-
-      await Promise.all([
-        fetchAircraftOnIcao(icao24),
-        fetchTrackOnIcao(icao24),
-      ]);
+    if (aircraft?.icao24) {
+      animationToAircraft(aircraft);
     }
   }
+}
+
+async function animationToAircraft(aircraft) {
+  new TWEEN.Tween(window.camera)
+    .to(
+      {
+        position: calculateCameraPosition(
+          new THREE.Vector3(0, 0, 0),
+          aircraft.position,
+          20
+        ),
+      },
+      1300
+    )
+    .easing(TWEEN.Easing.Sinusoidal.Out)
+    .onStart(() => {
+      window.orbitcontrols.enabled = false;
+      window.camera.cameraRotateAroundGlobe = false;
+    })
+    .onComplete(() => {
+      window.orbitcontrols.enabled = true;
+    })
+    .start();
+
+  const icao24 = aircraft.icao24;
+
+  await Promise.all([fetchAircraftOnIcao(icao24), fetchTrackOnIcao(icao24)]);
 }
 
 async function fetchAircraftOnIcao(icao24) {

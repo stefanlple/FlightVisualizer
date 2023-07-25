@@ -248,12 +248,27 @@
       <svg id="graph"></svg>
     </div>
 
+    <div id="cluster-group">
+      <div id="cluster-button">Cluster</div>
+      <ul id="cluster-list">
+        <li>
+          <div id="sub-cluster-button">
+            By Country
+            <span class="arrow">▶</span>
+          </div>
+          <ul id="sub-cluster-list"></ul>
+        </li>
+        <li>By Continent</li>
+        <li>By Airport</li>
+      </ul>
+    </div>
+
     <div class="tooltip"></div>
 
     <div id="3d_content"></div>
 
-    <script type="module" src="./src/main.js"></script>
-    <script type="module" src="./src/features/aircraftInfoBox.js"></script>
     <script type="module" src="./src/features/filter.js"></script>
+    <script type="module" src="./src/features/aircraftInfoBox.js"></script>
+    <script type="module" src="./src/main.js"></script>
   </body>
 </html>
