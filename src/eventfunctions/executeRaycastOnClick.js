@@ -11,6 +11,7 @@ import { username, password } from "../../info";
 
 import { latLonToCart } from "../utility/latLngToCartSystem";
 import { removeTrack } from "../utility/removeTrack";
+import { closeAircraftInfo, closeAirportInfo } from "../features/infoBoxs";
 
 import Aircraft from "../objects/Aircraft";
 
@@ -31,10 +32,47 @@ export async function executeRaycastOnClick() {
     if (aircraft?.icao24) {
       animationToAircraft(aircraft);
     }
+
+    if (airport) {
+      animationToAirport(airport);
+    }
   }
 }
 
+function animationToAirport(airport) {
+  new TWEEN.Tween(window.camera)
+    .to(
+      {
+        position: calculateCameraPosition(
+          new THREE.Vector3(0, 0, 0),
+          airport.position,
+          20
+        ),
+      },
+      1300
+    )
+    .easing(TWEEN.Easing.Sinusoidal.Out)
+    .onStart(() => {
+      window.orbitcontrols.enabled = false;
+      window.camera.cameraRotateAroundGlobe = false;
+    })
+    .onComplete(() => {
+      window.orbitcontrols.enabled = true;
+    })
+    .start();
+
+  const airportInfoBox = document.getElementById("airport-info-box");
+  const airportNameDiv = document.getElementById("airport-name");
+  const airportIcaoDiv = document.getElementById("airport-icao");
+
+  airportNameDiv.innerHTML = airport.airportname;
+  airportIcaoDiv.innerHTML = airport.icao;
+  airportInfoBox.style.width = "auto";
+  closeAircraftInfo();
+}
+
 async function animationToAircraft(aircraft) {
+  closeAirportInfo();
   new TWEEN.Tween(window.camera)
     .to(
       {
@@ -257,12 +295,12 @@ function drawGraphAndPlane(dataPoints, track) {
     .attr("class", "tooltip")
     .style("opacity", 0);
 
-  const trackBox = document.getElementById("altitude_box");
+  const trackBox = document.getElementById("altitude-box");
   trackBox.style.height = "250px";
 }
 
 function displayData(data) {
-  const aircraftInfoBox = document.getElementById("aircraft_info_box");
+  const aircraftInfoBox = document.getElementById("aircraft-info-box");
 
   const icao = document.getElementById("icao");
   const callSign = document.getElementById("call-sign");

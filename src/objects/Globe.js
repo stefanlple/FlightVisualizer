@@ -43,7 +43,7 @@ export default class Globe extends THREE.Group {
     const globe = new THREE.Mesh(globeGeometry, globeMaterial);
     this.add(globe);
 
-    const clouds = new THREE.Mesh(
+    /* const clouds = new THREE.Mesh(
       new THREE.SphereGeometry(globeRadius + 0.01),
       new THREE.MeshLambertMaterial({
         map: new THREE.TextureLoader().load(
@@ -57,7 +57,7 @@ export default class Globe extends THREE.Group {
         transparent: true,
       })
     );
-    this.add(clouds);
+    this.add(clouds); */
 
     const atmosphere = new THREE.Mesh(
       new THREE.SphereGeometry(globeRadius, 50, 50),

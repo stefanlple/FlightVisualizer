@@ -4,6 +4,7 @@ import base64 from "base64-js";
 import { latLonToCart } from "../utility/latLngToCartSystem";
 import { removeObject3D } from "../utility/removeObject3D";
 import { generateSubClusterListItems } from "../features/cluster";
+import { continentsMap } from "../data/continentsMap";
 
 import { username, password } from "../../info";
 
@@ -69,145 +70,7 @@ export default class Planes extends THREE.Group {
 
     this.countrySet = new Set();
 
-    this.continentsMap = {
-      "North America": [
-        "United States",
-        "Mexico",
-        "Canada",
-        "Dominican Republic",
-        "Bahamas",
-        "Guatemala",
-        "Trinidad and Tobago",
-        "Panama",
-        "Saint Vincent and the Grenadines",
-        "Antigua and Barbuda",
-      ],
-      "South America": [
-        "Chile",
-        "Brazil",
-        "Argentina",
-        "Guyana",
-        "Colombia",
-        "Ecuador",
-        "Bolivia",
-        "Venezuela",
-        "Suriname",
-        "Peru",
-      ],
-      Europe: [
-        "Switzerland",
-        "France",
-        "Germany",
-        "Estonia",
-        "Portugal",
-        "Austria",
-        "United Kingdom",
-        "Norway",
-        "Sweden",
-        "Poland",
-        "Hungary",
-        "Spain",
-        "Serbia",
-        "Greece",
-        "Romania",
-        "Bulgaria",
-        "Montenegro",
-        "Kingdom of the Netherlands",
-        "Italy",
-        "Slovakia",
-        "Iceland",
-        "Russian Federation",
-        "Finland",
-        "San Marino",
-        "Belgium",
-        "Denmark",
-        "Ireland",
-        "Slovenia",
-        "Croatia",
-        "Luxembourg",
-        "Ukraine",
-        "Albania",
-        "Czech Republic",
-        "Latvia",
-        "Malta",
-        "Lithuania",
-        "Belarus",
-        "Republic of Moldova",
-        "Monaco",
-      ],
-      Asia: [
-        "Thailand",
-        "Indonesia",
-        "Saudi Arabia",
-        "Japan",
-        "India",
-        "Turkey",
-        "Philippines",
-        "Jordan",
-        "Singapore",
-        "China",
-        "Bangladesh",
-        "Israel",
-        "United Arab Emirates",
-        "Mongolia",
-        "Pakistan",
-        "Oman",
-        "Sri Lanka",
-        "Viet Nam",
-        "Malaysia",
-        "Kazakhstan",
-        "Kuwait",
-        "Cyprus",
-        "Islamic Republic of Iran",
-        "Azerbaijan",
-        "Bahrain",
-        "Afghanistan",
-        "Lebanon",
-        "Republic of Korea",
-        "Taiwan",
-        "Georgia",
-        "Qatar",
-        "Uzbekistan",
-        "Lao People's Democratic Republic",
-        "Iraq",
-        "Myanmar",
-        "Nepal",
-        "Syrian Arab Republic",
-        "Kyrgyzstan",
-        "Brunei Darussalam",
-        "Turkmenistan",
-        "Armenia",
-        "Cambodia",
-        "Bhutan",
-      ],
-      Africa: [
-        "South Africa",
-        "Tunisia",
-        "Morocco",
-        "Algeria",
-        "Libyan Arab Jamahiriya",
-        "Mauritius",
-        "Egypt",
-        "Ethiopia",
-        "Rwanda",
-        "Cape Verde",
-        "Kenya",
-        "Nigeria",
-        "Angola",
-        "Senegal",
-        "Uganda",
-        "Gambia",
-        "Botswana",
-      ],
-      Oceania: [
-        "Australia",
-        "New Zealand",
-        "Fiji",
-        "Papua New Guinea",
-        "Solomon Islands",
-        "Vanuatu",
-      ],
-    };
+    this.continentsMap = continentsMap;
 
     //ON START
     (async () => {
@@ -243,8 +106,8 @@ export default class Planes extends THREE.Group {
   addEventListenerToButtons() {
     document.querySelector(".reset-button").addEventListener("click", () => {
       {
-        console.log("filter-parameters", this.filterParameters);
         this.filterParameters = { ...this.defaultFilterParameters };
+        console.log("filter-parameters", this.filterParameters);
         this.renderPlanes();
       }
     });

@@ -4,6 +4,7 @@ import base64 from "base64-js";
 import { latLonToCart } from "../utility/latLngToCartSystem";
 
 import { username, password } from "../../info";
+import Airport from "./Airport";
 
 export default class Airports extends THREE.Group {
   constructor() {
@@ -23,17 +24,15 @@ export default class Airports extends THREE.Group {
     // await this.fetchAirports();
 
     for (const port of this.airports) {
-      const airport = new THREE.Mesh(
-        new THREE.CircleGeometry(0.3),
-        new THREE.MeshBasicMaterial({ color: 0x0000ab })
-      );
+      const {
+        icao,
+        name,
+        position: { latitude, longitude },
+      } = port;
 
-      const [x, y, z] = latLonToCart(
-        port.position.latitude,
-        port.position.longitude,
-        0,
-        globeRadius
-      );
+      const airport = new Airport(icao, name);
+
+      const [x, y, z] = latLonToCart(latitude, longitude, 0, globeRadius);
       airport.translateX(x);
       airport.translateY(y);
       airport.translateZ(z);

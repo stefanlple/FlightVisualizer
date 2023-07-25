@@ -8,8 +8,8 @@
     <title>FlightVisualizer</title>
   </head>
   <body>
-    <div id="aircraft_info_box" style="width: 0">
-      <h1 style="display: inline">INFO BOX</h1>
+    <div id="aircraft-info-box" style="width: 0">
+      <h1 style="display: inline">AIRCRAFT INFO BOX</h1>
       <span id="close-button"></span>
       <table>
         <tbody>
@@ -60,6 +60,23 @@
           <tr>
             <td>SOURCE</td>
             <td id="source">test</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div id="airport-info-box" style="width: 0">
+      <h1 style="display: inline">AIRPORT INFO BOX</h1>
+      <span id="airport-close-button"></span>
+      <table>
+        <tbody>
+          <tr>
+            <td>NAME</td>
+            <td id="airport-name">test</td>
+          </tr>
+          <tr>
+            <td>ICAO</td>
+            <td id="airport-icao">test</td>
           </tr>
         </tbody>
       </table>
@@ -244,7 +261,7 @@
       </div>
     </div>
 
-    <div id="altitude_box">
+    <div id="altitude-box">
       <svg id="graph"></svg>
     </div>
 
@@ -268,7 +285,7 @@
     <div id="3d_content"></div>
 
     <script type="module" src="./src/features/filter.js"></script>
-    <script type="module" src="./src/features/aircraftInfoBox.js"></script>
+    <script type="module" src="./src/features/infoBoxs.js"></script>
     <script type="module" src="./src/main.js"></script>
   </body>
 </html>
