@@ -3,8 +3,11 @@ import base64 from "base64-js";
 
 import { latLonToCart } from "../utility/latLngToCartSystem";
 import { removeObject3D } from "../utility/removeObject3D";
-import { generateSubClusterListItems } from "../features/cluster";
-import { continentsMap } from "../data/continentsMap";
+import {
+  generateSubClusterListItems,
+  clusterButton,
+} from "../features/cluster";
+import { continentsMap, continentsColorMap } from "../data/continentsMap";
 
 import { username, password } from "../../info";
 
@@ -71,6 +74,7 @@ export default class Planes extends THREE.Group {
     this.countrySet = new Set();
 
     this.continentsMap = continentsMap;
+    this.continentsColorMap = continentsColorMap;
 
     //ON START
     (async () => {
@@ -107,6 +111,7 @@ export default class Planes extends THREE.Group {
     document.querySelector(".reset-button").addEventListener("click", () => {
       {
         this.filterParameters = { ...this.defaultFilterParameters };
+        clusterButton.innerHTML = "Group";
         console.log("filter-parameters", this.filterParameters);
         this.renderPlanes();
       }
@@ -256,6 +261,8 @@ export default class Planes extends THREE.Group {
       //update country set
       this.updateCountrySet(this.countrySet, plane[2]);
 
+      const clusterText = clusterButton.innerHTML;
+
       //filter out planes base on parameters
       if (this.checkPlaneOnParameter(this.filterParameters, plane)) {
         const aircraft = new Aircraft();
@@ -271,24 +278,27 @@ export default class Planes extends THREE.Group {
         aircraft.lookAt(0, 0, 0);
         aircraft.rotateZ(THREE.MathUtils.degToRad(orientation));
 
-        aircraft.material.color = new THREE.Color(
-          plane[8] ? 0xffffff : 0xff0000
-        );
-        aircraft.material.emissive = new THREE.Color(
-          plane[8] ? 0xffffff : 0xff0000
-        );
+        const colorValue = plane[8] ? 0xffffff : 0xff0000;
 
-        /* aircraft.material.color = setColorScale(
-        plane[9],
-        minVelocity,
-        maxVelocity
-      );
-      console.log(setColorScale(plane[9], minVelocity, maxVelocity));
-      aircraft.material.emissive = setColorScale(
-        plane[9],
-        minVelocity,
-        maxVelocity
-      ); */
+        aircraft.material.color = new THREE.Color(colorValue);
+        aircraft.material.emissive = new THREE.Color(colorValue);
+
+        //Grouping by color
+        if (clusterText !== "Group") {
+          if (clusterText === "By Continent") {
+            aircraft.material.color = new THREE.Color(
+              this.continentsColorMap[this.findContinent(plane[2])]
+            );
+            aircraft.material.emissive = new THREE.Color(
+              this.continentsColorMap[this.findContinent(plane[2])]
+            );
+          } else {
+            if (plane[2] === clusterText) {
+              aircraft.material.color = new THREE.Color(0x00ff00);
+              aircraft.material.emissive = new THREE.Color(0x00ff00);
+            }
+          }
+        }
 
         this.add(aircraft);
         this.plane3dObjects.push(aircraft);
@@ -322,5 +332,14 @@ export default class Planes extends THREE.Group {
     if (country !== "") {
       set.add(country);
     }
+  }
+
+  findContinent(countryName) {
+    for (const continent in continentsMap) {
+      if (continentsMap[continent].includes(countryName)) {
+        return continent;
+      }
+    }
+    return "Unknown Continent"; // If the country doesn't match any continent in the map
   }
 }

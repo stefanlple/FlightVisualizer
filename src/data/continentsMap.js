@@ -1,3 +1,13 @@
+export const continentsColorMap = {
+  "North America": "#0000FF", // Blue
+  "South America": "#008000", // Green
+  Europe: "#FF0000", // Red
+  Asia: "#FFFF00", // Yellow
+  Africa: "#40e0d0", // Cyan
+  Oceania: "#800080", // Purple
+  Antarctica: "#FFFFFF", // White
+};
+
 export const continentsMap = {
   "North America": [
     "United States",
@@ -25,6 +35,7 @@ export const continentsMap = {
     "Venezuela",
     "Suriname",
     "Peru",
+    "Paraguay",
   ],
   Europe: [
     "Switzerland",
@@ -136,6 +147,8 @@ export const continentsMap = {
     "Niger",
     "United Republic of Tanzania",
     "Côte d'Ivoire",
+    "Zambia",
+    "Namibia",
   ],
   Oceania: [
     "Australia",

@@ -96,7 +96,7 @@ async function animationToAircraft(aircraft) {
 
   const icao24 = aircraft.icao24;
 
-  await Promise.all([fetchAircraftOnIcao(icao24), fetchTrackOnIcao(icao24)]);
+  await Promise.all([fetchAircraftOnIcao(icao24), drawTrackOnIcao(icao24)]);
 }
 
 async function fetchAircraftOnIcao(icao24) {
@@ -118,9 +118,7 @@ async function fetchAircraftOnIcao(icao24) {
 
 const globeRadius = 102;
 
-async function fetchTrackOnIcao(icao24) {
-  removeTrack();
-
+export async function fetchTrackOnIcao(icao24) {
   const credentials = `${username}:${password}`;
   const encoder = new TextEncoder();
   const data = encoder.encode(credentials);
@@ -133,6 +131,13 @@ async function fetchTrackOnIcao(icao24) {
     },
   });
   const jsonData = await response.json();
+  return jsonData;
+}
+
+async function drawTrackOnIcao(icao24) {
+  removeTrack();
+
+  const jsonData = await fetchTrackOnIcao(icao24);
 
   const pathJson = jsonData.path;
   const pathPoints = [];

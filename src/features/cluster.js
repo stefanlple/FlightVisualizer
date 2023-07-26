@@ -1,7 +1,8 @@
-const clusterButton = document.getElementById("cluster-button");
+export const clusterButton = document.getElementById("cluster-button");
 const clusterList = document.getElementById("cluster-list");
+export const byContinentDiv = document.getElementById("group-by-continent");
 const subClusterButton = document.getElementById("sub-cluster-button");
-const subClusterList = document.getElementById("sub-cluster-list");
+export const subClusterList = document.getElementById("sub-cluster-list");
 
 function toggleClusterList() {
   clusterList.style.display =
@@ -16,6 +17,9 @@ function toggleSubClusterList() {
 clusterButton.addEventListener("click", (event) => {
   event.stopPropagation();
   toggleClusterList();
+  if (clusterButton.innerHTML !== "Group") {
+    clusterButton.innerHTML = "Group";
+  }
 });
 
 subClusterButton.addEventListener("mouseenter", () => {
@@ -41,10 +45,12 @@ export const generateSubClusterListItems = (input) => {
       li.textContent = item;
       li.addEventListener("click", () => {
         // Add your logic here when clicking on each sub-cluster item
-        console.log(`Clicked on ${item}`);
+        clusterButton.innerHTML = item;
       });
       subClusterList.appendChild(li);
     });
-};
 
-/* generateSubClusterListItems(new Set(["A", "B", "C", "D", "F"])); */
+  byContinentDiv.addEventListener("click", () => {
+    clusterButton.innerHTML = byContinentDiv.innerHTML;
+  });
+};
