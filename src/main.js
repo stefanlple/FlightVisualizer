@@ -24,6 +24,7 @@ import { calculateMousePosition } from "./eventfunctions/calculateMousePosition.
 import { executeRaycastOnClick } from "./eventfunctions/executeRaycastOnClick.js";
 import { latLonToCart } from "./utility/latLngToCartSystem";
 import { executeRaycastOnMove } from "./eventfunctions/executeRaycastOnMove";
+import { calculateLinearPosition } from "./utility/calculateLinearPosition";
 
 function main() {
   window.scene = new THREE.Scene();
@@ -97,6 +98,18 @@ function main() {
   window.scene.add(planes);
 
   const sun = new Sun();
+
+  let subsolarPosition= sun.getSubsolarPoint(Date.now());
+  let sunPosition= calculateLinearPosition(
+    new THREE.Vector3(0, 0, 0),
+    new THREE.Vector3(
+      latLonToCart(subsolarPosition.latitude, subsolarPosition.longitude, 0, 102)[0],
+      latLonToCart(subsolarPosition.latitude, subsolarPosition.longitude, 0, 102)[1],
+      latLonToCart(subsolarPosition.latitude, subsolarPosition.longitude, 0, 102)[2]),
+    50
+  )
+  sun.children[0].position.set(sunPosition.x,sunPosition.y,sunPosition.z)
+  sun.updateSun()
   window.scene.add(sun);
 
   const aircraft = new Aircraft();
@@ -114,6 +127,7 @@ function main() {
   ball.translateZ(latLonToCart(34.052235, -118.243683, 0, 102)[2]);
   ball.name = "LOS ANGELES";
   window.scene.add(ball);
+  
 
   document.getElementById("3d_content").appendChild(window.renderer.domElement);
 
@@ -130,13 +144,29 @@ function main() {
 
   var lastTimeStamp = 0;
   let fetchTimeInSeconds = 30;
+
   function mainLoop(nowTimestamp) {
     stats.begin();
+
     if (nowTimestamp - lastTimeStamp >= fetchTimeInSeconds * 1000) {
       lastTimeStamp = nowTimestamp;
       console.log(`${fetchTimeInSeconds} seconds passed`);
       planes.renderPlanes();
+
+      subsolarPosition= sun.getSubsolarPoint(Date.now());
+      sunPosition= calculateLinearPosition(
+        new THREE.Vector3(0, 0, 0),
+        new THREE.Vector3(
+          latLonToCart(subsolarPosition.latitude, subsolarPosition.longitude, 0, 102)[0],
+          latLonToCart(subsolarPosition.latitude, subsolarPosition.longitude, 0, 102)[1],
+          latLonToCart(subsolarPosition.latitude, subsolarPosition.longitude, 0, 102)[2]),
+        50
+      )
+      sun.children[0].position.set(sunPosition.x,sunPosition.y,sunPosition.z) 
+      sun.updateSun()
+
     }
+
     if (window.camera.cameraRotateAroundGlobe) {
       const rotationSpeed = 0.0001; // Adjust the rotation speed as desired
       const globeCenter = new THREE.Vector3(0, 0, 0); // Center of the globe
@@ -149,7 +179,6 @@ function main() {
       window.camera.position.set(cameraX, 160, cameraZ);
     }
 
-    sun.rotateAroundOriginBaseOnTime(300);
     orbitControls.update();
     TWEEN.update();
 

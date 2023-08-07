@@ -1,4 +1,4 @@
-export const calculateCameraPosition = (vec1, vec2, distance) => {
+export const calculateLinearPosition = (vec1, vec2, distance) => {
   const direction = {
     x: vec2.x - vec1.x,
     y: vec2.y - vec1.y,

@@ -5,7 +5,7 @@ import BASE64 from "base64-js";
 
 import { findObjectByName } from "../utility/findObjectbyName";
 import { removeObject3D } from "../utility/removeObject3D";
-import { calculateCameraPosition } from "../utility/calculateCameraPosition";
+import { calculateLinearPosition } from "../utility/calculateLinearPosition";
 
 import { username, password } from "../../info";
 
@@ -43,7 +43,7 @@ function animationToAirport(airport) {
   new TWEEN.Tween(window.camera)
     .to(
       {
-        position: calculateCameraPosition(
+        position: calculateLinearPosition(
           new THREE.Vector3(0, 0, 0),
           airport.position,
           20
@@ -76,7 +76,7 @@ async function animationToAircraft(aircraft) {
   new TWEEN.Tween(window.camera)
     .to(
       {
-        position: calculateCameraPosition(
+        position: calculateLinearPosition(
           new THREE.Vector3(0, 0, 0),
           aircraft.position,
           20

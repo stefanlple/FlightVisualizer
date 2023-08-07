@@ -36,6 +36,7 @@ export const continentsMap = {
     "Suriname",
     "Peru",
     "Paraguay",
+    "Uruguay"
   ],
   Europe: [
     "Switzerland",
@@ -123,6 +124,7 @@ export const continentsMap = {
     "Cambodia",
     "Bhutan",
     "Maldives",
+    "Democratic People's Republic of Korea"
   ],
   Africa: [
     "South Africa",
@@ -149,6 +151,8 @@ export const continentsMap = {
     "Côte d'Ivoire",
     "Zambia",
     "Namibia",
+    "Ghana",
+    "Mozambique"
   ],
   Oceania: [
     "Australia",
