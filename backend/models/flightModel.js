@@ -1,36 +1,22 @@
 const mongoose = require("mongoose");
 
-const flightSchema = mongoose.Schema(
-  {
-    name: {
-      type: String,
-      required: [true, "Please add a name"],
-    },
-    email: {
-      type: String,
-      required: [true, "Please add an email"],
-      unique: true,
-    },
-    password: {
-      type: String,
-      required: [true, "Please add a password"],
-    },
-    address: {
-      street: String,
-      city: String,
-      state: String,
-      country: String,
-      postalCode: String,
-    },
-    role: {
-      type: String,
-      enum: ["ROLE_ADMIN", "ROLE_USER"],
-      default: "ROLE_USER",
-    },
-  },
-  {
-    timestamps: true,
-  }
-);
+const flightSchema = mongoose.Schema({
+  callsign: String,
+  number: String,
+  icao24: String,
+  registration: String,
+  typecode: String,
+  origin: String,
+  destination: String,
+  firstseen: String,
+  lastseen: String,
+  day: String,
+  latitude_1: Number,
+  longitude_1: Number,
+  altitude_1: Number,
+  latitude_2: Number,
+  longitude_2: Number,
+  altitude_2: Number,
+});
 
-module.exports = mongoose.model("Flight", flightSchema);
+module.exports = mongoose.model("datas", flightSchema);
