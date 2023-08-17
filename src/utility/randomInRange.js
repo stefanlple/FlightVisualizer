@@ -4,7 +4,7 @@ export const randomInRange = (
   excludeRangeMin = undefined,
   excludeRangeMax = undefined
 ) => {
-  const num = Math.random() * (max - min) + min;
+  const num = Math.random() * (max - min + 1) + min;
   return num > excludeRangeMin && num < excludeRangeMax
     ? randomInRange(min, max, excludeRangeMin, excludeRangeMax)
     : num;

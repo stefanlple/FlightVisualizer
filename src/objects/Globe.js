@@ -1,6 +1,4 @@
 import * as THREE from "three";
-import Vertex from "../shaders/Vertex.glsl";
-import Fragment from "../shaders/Fragment.glsl";
 
 import AtmosphereVertexShader from "../shaders/AtmosphereVertexShader.glsl";
 import AtmosphereFragmentShader from "../shaders/AtmosphereFragmentShader.glsl";
@@ -40,8 +38,8 @@ export default class Globe extends THREE.Group {
       ),
       specular: new THREE.Color("grey"), */
     });
-    const globe = new THREE.Mesh(globeGeometry, globeMaterial);
-    this.add(globe);
+    const earth = new THREE.Mesh(globeGeometry, globeMaterial);
+    this.add(earth);
 
     /* const clouds = new THREE.Mesh(
       new THREE.SphereGeometry(globeRadius + 0.01),
