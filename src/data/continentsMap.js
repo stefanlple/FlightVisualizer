@@ -126,6 +126,7 @@ export const continentsMap = {
     "Bhutan",
     "Maldives",
     "Democratic People's Republic of Korea",
+    "Yemen",
   ],
   Africa: [
     "South Africa",

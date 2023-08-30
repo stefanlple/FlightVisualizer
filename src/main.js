@@ -10,7 +10,6 @@ import Globe from "./objects/Globe";
 import Enviroment from "./enviroment/Enviroment";
 import Sun from "./objects/Sun";
 import Planes from "./objects/Planes";
-import Aircraft from "./objects/Aircraft";
 import Airports from "./objects/Airports";
 
 //Utilities
@@ -72,6 +71,10 @@ function main() {
     window.camera,
     window.renderer.domElement
   );
+  orbitControls.target = new THREE.Vector3(0, 0, 0);
+  orbitControls.minDistance = 130;
+  orbitControls.maxDistance = 380;
+  orbitControls.enablePan = false;
 
   orbitControls.addEventListener("start", () => {
     window.camera.cameraRotateAroundGlobe = false;
@@ -99,21 +102,36 @@ function main() {
 
   const sun = new Sun();
 
-  let subsolarPosition= sun.getSubsolarPoint(Date.now());
-  let sunPosition= calculateLinearPosition(
+  let subsolarPosition = sun.getSubsolarPoint(Date.now());
+  let sunPosition = calculateLinearPosition(
     new THREE.Vector3(0, 0, 0),
     new THREE.Vector3(
-      latLonToCart(subsolarPosition.latitude, subsolarPosition.longitude, 0, 102)[0],
-      latLonToCart(subsolarPosition.latitude, subsolarPosition.longitude, 0, 102)[1],
-      latLonToCart(subsolarPosition.latitude, subsolarPosition.longitude, 0, 102)[2]),
+      latLonToCart(
+        subsolarPosition.latitude,
+        subsolarPosition.longitude,
+        0,
+        102
+      )[0],
+      latLonToCart(
+        subsolarPosition.latitude,
+        subsolarPosition.longitude,
+        0,
+        102
+      )[1],
+      latLonToCart(
+        subsolarPosition.latitude,
+        subsolarPosition.longitude,
+        0,
+        102
+      )[2]
+    ),
     50
-  )
-  sun.children[0].position.set(sunPosition.x,sunPosition.y,sunPosition.z)
-  sun.updateSun()
+  );
+  sun
+    .getDirectionalLight()
+    .position.set(sunPosition.x, sunPosition.y, sunPosition.z);
+  sun.updateSun();
   window.scene.add(sun);
-
-  const aircraft = new Aircraft();
-  window.scene.add(aircraft);
 
   const airports = new Airports();
   window.scene.add(airports);
@@ -127,7 +145,6 @@ function main() {
   ball.translateZ(latLonToCart(34.052235, -118.243683, 0, 102)[2]);
   ball.name = "LOS ANGELES";
   window.scene.add(ball);
-  
 
   document.getElementById("3d_content").appendChild(window.renderer.domElement);
 
@@ -153,18 +170,35 @@ function main() {
       console.log(`${fetchTimeInSeconds} seconds passed`);
       planes.renderPlanes();
 
-      subsolarPosition= sun.getSubsolarPoint(Date.now());
-      sunPosition= calculateLinearPosition(
+      subsolarPosition = sun.getSubsolarPoint(Date.now());
+      sunPosition = calculateLinearPosition(
         new THREE.Vector3(0, 0, 0),
         new THREE.Vector3(
-          latLonToCart(subsolarPosition.latitude, subsolarPosition.longitude, 0, 102)[0],
-          latLonToCart(subsolarPosition.latitude, subsolarPosition.longitude, 0, 102)[1],
-          latLonToCart(subsolarPosition.latitude, subsolarPosition.longitude, 0, 102)[2]),
+          latLonToCart(
+            subsolarPosition.latitude,
+            subsolarPosition.longitude,
+            0,
+            102
+          )[0],
+          latLonToCart(
+            subsolarPosition.latitude,
+            subsolarPosition.longitude,
+            0,
+            102
+          )[1],
+          latLonToCart(
+            subsolarPosition.latitude,
+            subsolarPosition.longitude,
+            0,
+            102
+          )[2]
+        ),
         50
-      )
-      sun.children[0].position.set(sunPosition.x,sunPosition.y,sunPosition.z) 
-      sun.updateSun()
-
+      );
+      sun
+        .getDirectionalLight()
+        .position.set(sunPosition.x, sunPosition.y, sunPosition.z);
+      sun.updateSun();
     }
 
     if (window.camera.cameraRotateAroundGlobe) {
