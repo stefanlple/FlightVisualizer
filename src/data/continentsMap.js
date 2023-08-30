@@ -24,6 +24,7 @@ export const continentsMap = {
     "Nicaragua",
     "Honduras",
     "El Salvador",
+    "Belize",
   ],
   "South America": [
     "Chile",
