@@ -68,7 +68,6 @@ function mainRealTime() {
 
   const planeStateHistorical = new HistoricalState();
   const planeStateRealtime = new RealtimeState();
-  console.log(planeStateHistorical);
   const planeState =
     window.state === "historical" ? planeStateHistorical : planeStateRealtime;
 
@@ -226,7 +225,11 @@ function mainHistorical() {
   const sun = new Sun();
 
   //TODO
-  let subsolarPosition = sun.getSubsolarPoint(Date.now());
+  const unixTimestamp =
+    window.state === "historical"
+      ? new Date("2020-04-02T18:00:00Z").getTime()
+      : Date.now();
+  let subsolarPosition = sun.getSubsolarPoint(unixTimestamp);
   let sunPosition = calculateLinearPosition(
     new THREE.Vector3(0, 0, 0),
     new THREE.Vector3(
@@ -345,7 +348,7 @@ function mainHistorical() {
 
 function initializeScene() {
   window.scene = new THREE.Scene();
-  window.scene.add(new THREE.AxesHelper(150));
+  //window.scene.add(new THREE.AxesHelper(150));
 
   window.camera = new THREE.PerspectiveCamera(
     45,
@@ -404,6 +407,9 @@ document.querySelectorAll("#startButton").forEach((e) => {
       const filterElements = document.querySelector(".filter");
       clusterGroupElements.style.visibility = "visible";
       filterElements.style.visibility = "visible";
+
+      const legend = document.querySelector("#help");
+      legend.style.visibility = "visible";
     });
   } else {
     e.addEventListener("click", function (event) {

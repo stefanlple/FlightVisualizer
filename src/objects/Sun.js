@@ -1,11 +1,5 @@
 import * as THREE from "three";
 
-import { getDayOfYear } from "../utility/getDayOfYear";
-
-import { calculateLinearPosition } from "../utility/calculateLinearPosition";
-
-import { latLonToCart } from "../utility/latLngToCartSystem";
-
 export default class Sun extends THREE.Group {
   constructor() {
     super();
@@ -24,7 +18,7 @@ export default class Sun extends THREE.Group {
     directionalLight.target.position.set(0, 0, 0);
     this.add(directionalLight);
     this.add(directionalLight.target);
-    this.add(helper);
+    //this.add(helper);
     this.helper = helper;
     this.directionalLightTarget = directionalLight.target;
     this.directionalLight = directionalLight;

@@ -54,3 +54,11 @@ export const generateSubClusterListItems = (input) => {
     clusterButton.innerHTML = byContinentDiv.innerHTML;
   });
 };
+
+document.getElementById("help").addEventListener("mouseover", () => {
+  document.getElementById("legend").style.visibility = "visible";
+});
+
+document.getElementById("help").addEventListener("mouseout", () => {
+  document.getElementById("legend").style.visibility = "hidden";
+});

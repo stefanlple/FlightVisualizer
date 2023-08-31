@@ -25,6 +25,7 @@ export const continentsMap = {
     "Honduras",
     "El Salvador",
     "Belize",
+    "Barbados",
   ],
   "South America": [
     "Chile",
@@ -80,6 +81,7 @@ export const continentsMap = {
     "Belarus",
     "Republic of Moldova",
     "Monaco",
+    "Bosnia and Herzegovina",
   ],
   Asia: [
     "Thailand",

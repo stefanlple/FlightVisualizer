@@ -17,9 +17,8 @@ export default class Planes extends THREE.Group {
   constructor(state) {
     super();
     this.state = state;
-    // Bind the `this` context of the `renderRealtimePlanes` method to `this`
-    this.state.renderRealtimePlanes =
-      this.state?.renderRealtimePlanes?.bind(this);
+    // Bind the `this` context of the `renderPlanes` method to `this`
+    this.state.renderPlanes = this.state?.renderPlanes?.bind(this);
     this.name = "planes";
     this.plane3dObjects = [];
     this.planeObjects = [];
@@ -85,7 +84,7 @@ export default class Planes extends THREE.Group {
       this.addEventListenerToButtons();
       this.getListItemNodes();
       this.manageFilterParameters();
-      await this.renderPlanes();
+      await this.render();
       await generateSubClusterListItems(this.countrySet);
 
       //only for dev
@@ -93,7 +92,7 @@ export default class Planes extends THREE.Group {
         const elementsNotInArr1 = arr2.filter(
           (element) => !arr1.includes(element)
         );
-        console.log("PLEASE ADD THIS TO COUNTRIES MAP", elementsNotInArr1);
+        //console.log("PLEASE ADD THIS TO COUNTRIES MAP", elementsNotInArr1);
       }
 
       findElementsNotInArray(
@@ -116,7 +115,7 @@ export default class Planes extends THREE.Group {
         this.filterParameters = { ...this.defaultFilterParameters };
         clusterButton.innerHTML = "Group";
         console.log("filter-parameters", this.filterParameters);
-        this.renderRealtimePlanes();
+        this.render();
       }
     });
   }
@@ -171,14 +170,15 @@ export default class Planes extends THREE.Group {
 
     document.querySelector(".apply-button").addEventListener("click", () => {
       updateFilterParameters();
-      this.renderRealtimePlanes();
+
+      this.render();
       console.log("filter-parameters", this.filterParameters);
     });
   }
 
-  async renderPlanes() {
-    // Call `renderRealtimePlanes` in the context of `Planes`
-    await this.state.renderRealtimePlanes();
+  async render() {
+    // Call `renderPlanes` in the context of `Planes`
+    await this.state.renderPlanes();
   }
 
   checkPlaneOnParameter(filterParameters, plane) {
@@ -237,7 +237,7 @@ export default class Planes extends THREE.Group {
     return filter;
   }
 
-  /*   async renderRealtimePlanes() {
+  /*   async renderPlanes() {
     //plus two to lift the planes up
     const globeRadius = 102;
 
@@ -347,17 +347,14 @@ export default class Planes extends THREE.Group {
 }
 
 class State {
-  constructor() {
-    // Constructor logic goes here
-  }
+  constructor() {}
 }
 
 export class HistoricalState extends State {
   constructor() {
     super();
-    // Additional constructor logic for HistoricalState
   }
-  async renderRealtimePlanes() {
+  async renderPlanes() {
     //plus two to lift the planes up
     const globeRadius = 102;
 
@@ -467,7 +464,7 @@ export class HistoricalState extends State {
     }
     /* / Harvsine Formular */
 
-    //Testing Data
+    //Testing Date
     let testDate = new Date("2020-04-02T18:00:00Z");
 
     await fetchHistoricalFlightData(testDate);
@@ -535,7 +532,7 @@ export class RealtimeState extends State {
   constructor() {
     super();
   }
-  async renderRealtimePlanes() {
+  async renderPlanes() {
     //plus two to lift the planes up
     const globeRadius = 102;
 

@@ -14,7 +14,7 @@ const getDataByDate = asyncHandler(async (req, res) => {
   const flights = await Flight.find({
     firstseen: { $lte: dateObject },
     lastseen: { $gte: dateObject },
-  }).limit(1000); //limit for performance
+  }).limit(500);
 
   if (flights) {
     res.status(200).json(flights);
