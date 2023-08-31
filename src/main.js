@@ -369,6 +369,20 @@ function initializeScene() {
 
   //renderer.toneMapping = THREE.ACESFilmicToneMapping;
 
+  const listener = new THREE.AudioListener();
+  window.camera.add(listener);
+
+  // create a global audio source
+  const sound = new THREE.Audio(listener);
+
+  const audioLoader = new THREE.AudioLoader();
+  audioLoader.load("./src/sounds/background.mp3", function (buffer) {
+    sound.setBuffer(buffer);
+    sound.setLoop(true);
+    sound.setVolume(0.0175);
+    sound.play();
+  });
+
   const enviroment = new Enviroment();
   window.scene.add(enviroment);
 
