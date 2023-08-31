@@ -177,7 +177,6 @@ export default class Planes extends THREE.Group {
   }
 
   async renderPlanes() {
-    console.log("hahah", this);
     // Call `renderRealtimePlanes` in the context of `Planes`
     await this.state.renderRealtimePlanes();
   }
@@ -394,30 +393,133 @@ export class HistoricalState extends State {
       }
     };
 
-    await fetchHistoricalFlightData("2020-04-02");
+    function degToRad(degrees) {
+      return degrees * (Math.PI / 180);
+    }
 
+    function radToDeg(radians) {
+      return radians * (180 / Math.PI);
+    }
+
+    function calculateBearing(startPoint, endPoint) {
+      let lat1 = degToRad(startPoint.latitude);
+      let lat2 = degToRad(endPoint.latitude);
+      let deltaLon = degToRad(endPoint.longitude - startPoint.longitude);
+
+      let y = Math.sin(deltaLon) * Math.cos(lat2);
+      let x =
+        Math.cos(lat1) * Math.sin(lat2) -
+        Math.sin(lat1) * Math.cos(lat2) * Math.cos(deltaLon);
+      let bearing = Math.atan2(y, x);
+
+      // Convert bearing from radians to degrees
+      bearing = radToDeg(bearing);
+
+      // Adjust bearing to be within range 0-360 degrees
+      bearing = (bearing + 360) % 360;
+
+      return bearing;
+    }
+
+    // Calculate the destination point from given point having travelled the given distance (in km), on the given initial bearing (bearing may vary before destination is reached)
+    function calculateDestinationLocation(point, bearing, distance) {
+      distance = distance / 6371000; // convert to angular distance in radians
+      bearing = degToRad(bearing); // convert bearing in degrees to radians
+
+      let lat1 = degToRad(point.latitude);
+      let lon1 = degToRad(point.longitude);
+
+      let lat2 = Math.asin(
+        Math.sin(lat1) * Math.cos(distance) +
+          Math.cos(lat1) * Math.sin(distance) * Math.cos(bearing)
+      );
+      let lon2 =
+        lon1 +
+        Math.atan2(
+          Math.sin(bearing) * Math.sin(distance) * Math.cos(lat1),
+          Math.cos(distance) - Math.sin(lat1) * Math.sin(lat2)
+        );
+      lon2 = ((lon2 + 3 * Math.PI) % (2 * Math.PI)) - Math.PI; // normalize to -180 - + 180 degrees
+
+      return { latitude: radToDeg(lat2), longitude: radToDeg(lon2) };
+    }
+
+    /*  Harvsine Formular */
+    function calculateDistanceBetweenLocations(startPoint, endPoint) {
+      let lat1 = degToRad(startPoint.latitude);
+      let lon1 = degToRad(startPoint.longitude);
+
+      let lat2 = degToRad(endPoint.latitude);
+      let lon2 = degToRad(endPoint.longitude);
+
+      let deltaLat = lat2 - lat1;
+      let deltaLon = lon2 - lon1;
+
+      let a =
+        Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
+        Math.cos(lat1) *
+          Math.cos(lat2) *
+          Math.sin(deltaLon / 2) *
+          Math.sin(deltaLon / 2);
+      let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+      return 6371000 * c;
+    }
+    /* / Harvsine Formular */
+
+    //Testing Data
+    let testDate = new Date("2020-04-02T18:00:00Z");
+
+    await fetchHistoricalFlightData(testDate);
+
+    function calculateDateFraction(date1, date2, dateBetween) {
+      // Calculate the time difference in milliseconds
+      const totalTime = date2 - date1;
+      const elapsedTime = dateBetween - date1;
+
+      // Calculate the fraction as a percentage
+      const fractionPercentage = elapsedTime / totalTime;
+
+      return fractionPercentage.toFixed(2);
+    }
+
+    //LOOP
     for (const plane of this.planeObjects) {
-      /* console.log(plane); */
-      //update country set
-      //filter out planes base on parameters
+      const bearing = calculateBearing(
+        { latitude: plane.latitude_1, longitude: plane.longitude_1 },
+        { latitude: plane.latitude_2, longitude: plane.longitude_2 }
+      );
+
+      const intermediaryLocation = calculateDestinationLocation(
+        { latitude: plane.latitude_1, longitude: plane.latitude_1 },
+        bearing,
+        calculateDistanceBetweenLocations(
+          { latitude: plane.latitude_1, longitude: plane.longitude_1 },
+          { latitude: plane.latitude_2, longitude: plane.longitude_2 }
+        ) *
+          calculateDateFraction(
+            new Date(plane.firstseen),
+            new Date(plane.lastseen),
+            testDate
+          )
+      );
+
       const aircraft = new THREE.Mesh(
-        new THREE.SphereGeometry(0.15),
+        new THREE.SphereGeometry(0.25),
         new THREE.MeshBasicMaterial({ color: 0xff0000 })
       );
-
-      const [x, y, z] = latLonToCart(
-        plane.latitude_1,
-        plane.longitude_1,
-        plane.altitude_1,
+      const [aircraftx1, aircrafty1, aircraftz1] = latLonToCart(
+        intermediaryLocation.latitude,
+        intermediaryLocation.longitude,
+        0,
         globeRadius
       );
-      aircraft.translateX(x);
-      aircraft.translateY(y);
-      aircraft.translateZ(z);
-
+      aircraft.translateX(aircraftx1);
+      aircraft.translateY(aircrafty1);
+      aircraft.translateZ(aircraftz1);
       aircraft.lookAt(0, 0, 0);
-
       this.add(aircraft);
+
       this.plane3dObjects.push(aircraft);
     }
 
@@ -434,7 +536,6 @@ export class RealtimeState extends State {
     super();
   }
   async renderRealtimePlanes() {
-    console.log("hello this", this);
     //plus two to lift the planes up
     const globeRadius = 102;
 

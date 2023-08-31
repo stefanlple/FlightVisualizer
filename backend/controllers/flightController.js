@@ -6,23 +6,18 @@ const getHello = asyncHandler(async (req, res) => {
 });
 
 const getDataByDate = asyncHandler(async (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
   // Extract date from query parameters
   const { date } = req.query;
   const dateObject = new Date(date);
 
-  // Get adjacent dates
-  const { dayBefore, dayAfter } = getAdjacentDates(dateObject);
-
-  // Find flights that occurred on the specified date
   const flights = await Flight.find({
-    day: {
-      $gte: dayBefore,
-      $lt: dayAfter,
-    },
-  });
+    firstseen: { $lte: dateObject },
+    lastseen: { $gte: dateObject },
+  }).limit(1000); //limit for performance
 
   if (flights) {
-    res.status(200).json(flights.length);
+    res.status(200).json(flights);
   } else {
     res.status(401);
     throw new Error("No data. ERROR");
