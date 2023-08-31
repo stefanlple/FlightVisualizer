@@ -1,4 +1,4 @@
-const Data = require("../models/flightModel");
+const Flight = require("../models/flightModel");
 const asyncHandler = require("express-async-handler");
 
 const getHello = asyncHandler(async (req, res) => {
@@ -6,27 +6,41 @@ const getHello = asyncHandler(async (req, res) => {
 });
 
 const getDataByDate = asyncHandler(async (req, res) => {
-  const datePrefix = req.query.date; // Get the query parameter for the date prefix
+  // Extract date from query parameters
+  const { date } = req.query;
+  const dateObject = new Date(date);
 
-  console.log(datePrefix);
+  // Get adjacent dates
+  const { dayBefore, dayAfter } = getAdjacentDates(dateObject);
 
-  const query = {
+  // Find flights that occurred on the specified date
+  const flights = await Flight.find({
     day: {
-      $regex: `^${datePrefix}`, // Use a regex to match the beginning of the date string
+      $gte: dayBefore,
+      $lt: dayAfter,
     },
-  };
-
-  const data = await Data.find({
-    callsign: "AAR561",
   });
-  console.log(data);
-  // if (data.length > 0) {
-  res.status(200).json(data);
-  /*  } else {
+
+  if (flights) {
+    res.status(200).json(flights.length);
+  } else {
     res.status(401);
-    throw new Error("No data");
-  } */
+    throw new Error("No data. ERROR");
+  }
 });
+
+function getAdjacentDates(date) {
+  let dayBefore = new Date(date);
+  dayBefore.setDate(dayBefore.getDate() - 1);
+
+  let dayAfter = new Date(date);
+  dayAfter.setDate(dayAfter.getDate() + 1);
+
+  return {
+    dayBefore: dayBefore,
+    dayAfter: dayAfter,
+  };
+}
 
 module.exports = {
   getDataByDate,

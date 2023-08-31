@@ -2,15 +2,12 @@ const mongoose = require("mongoose");
 
 const flightSchema = mongoose.Schema({
   callsign: String,
-  number: String,
   icao24: String,
-  registration: String,
-  typecode: String,
   origin: String,
   destination: String,
-  firstseen: String,
-  lastseen: String,
-  day: String,
+  firstseen: Date,
+  lastseen: Date,
+  day: Date,
   latitude_1: Number,
   longitude_1: Number,
   altitude_1: Number,
@@ -19,4 +16,4 @@ const flightSchema = mongoose.Schema({
   altitude_2: Number,
 });
 
-module.exports = mongoose.model("datas", flightSchema);
+module.exports = mongoose.model("Flight", flightSchema, "flights");
