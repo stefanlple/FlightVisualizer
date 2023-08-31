@@ -123,7 +123,7 @@ function mainRealTime() {
     if (nowTimestamp - lastTimeStamp >= fetchTimeInSeconds * 1000) {
       lastTimeStamp = nowTimestamp;
       console.log(`${fetchTimeInSeconds} seconds passed`);
-      planes.renderRealtimePlanes();
+      planes.render();
 
       subsolarPosition = sun.getSubsolarPoint(Date.now());
       sunPosition = calculateLinearPosition(
@@ -286,7 +286,7 @@ function mainHistorical() {
     if (nowTimestamp - lastTimeStamp >= fetchTimeInSeconds * 1000) {
       lastTimeStamp = nowTimestamp;
       console.log(`${fetchTimeInSeconds} seconds passed`);
-      planes.renderRealtimePlanes();
+      planes.render();
 
       //TODO
       subsolarPosition = sun.getSubsolarPoint(Date.now());
@@ -370,7 +370,6 @@ function initializeScene() {
   //renderer.toneMapping = THREE.ACESFilmicToneMapping;
 
   const listener = new THREE.AudioListener();
-  window.camera.add(listener);
 
   // create a global audio source
   const sound = new THREE.Audio(listener);
@@ -379,7 +378,7 @@ function initializeScene() {
   audioLoader.load("./src/sounds/background.mp3", function (buffer) {
     sound.setBuffer(buffer);
     sound.setLoop(true);
-    sound.setVolume(0.0175);
+    sound.setVolume(parseFloat(0.0175));
     sound.play();
   });
 
@@ -391,6 +390,7 @@ function initializeScene() {
 
   const globe = new Globe();
   window.scene.add(globe);
+  globe.add(listener);
 
   const airports = new Airports();
   window.scene.add(airports);

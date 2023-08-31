@@ -120,16 +120,16 @@ async function fetchAircraftOnIcao(icao24) {
 const globeRadius = 102;
 
 export async function fetchTrackOnIcao(icao24) {
-  /*   const credentials = `${username}:${password}`; */
+  /* const credentials = `${username}:${password}`; 
   const encoder = new TextEncoder();
   const data = encoder.encode(credentials);
-  const encodedCredentials = BASE64.fromByteArray(data);
+  const encodedCredentials = BASE64.fromByteArray(data); */
 
   const url = `https://opensky-network.org/api/tracks/all?icao24=${icao24}&time=0`;
   const response = await fetch(url, {
-    headers: {
+    /* headers: {
       Authorization: `Basic ${encodedCredentials}`,
-    },
+    }, */
   });
   const jsonData = await response.json();
   return jsonData;
