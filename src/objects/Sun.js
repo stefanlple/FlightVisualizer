@@ -60,7 +60,7 @@ export default class Sun extends THREE.Group {
       ) /
         Math.PI) *
       180;
-    console.log("accurate", subsolarPointLatitude, "note accurate", alt);
+    //console.log("accurate", subsolarPointLatitude, "note accurate", alt);
 
     const hours = currentDate.getUTCHours();
     const minutes = currentDate.getUTCMinutes();
