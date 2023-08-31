@@ -7,7 +7,8 @@ import { findObjectByName } from "../utility/findObjectbyName";
 import { removeObject3D } from "../utility/removeObject3D";
 import { calculateLinearPosition } from "../utility/calculateLinearPosition";
 
-import { username, password } from "../../info";
+//Access by OpenSky Network
+/* import { username, password } from "../../info"; */
 
 import { latLonToCart } from "../utility/latLngToCartSystem";
 import { removeTrack } from "../utility/removeTrack";
@@ -100,16 +101,16 @@ async function animationToAircraft(aircraft) {
 }
 
 async function fetchAircraftOnIcao(icao24) {
-  const credentials = `${username}:${password}`;
+  /* const credentials = `${username}:${password}`;
   const encoder = new TextEncoder();
   const data = encoder.encode(credentials);
   const encodedCredentials = BASE64.fromByteArray(data);
-
+ */
   const url = "https://opensky-network.org/api/states/all?icao24=";
   const response = await fetch(url + icao24, {
-    headers: {
+    /*  headers: {
       Authorization: `Basic ${encodedCredentials}`,
-    },
+    }, */
   });
   const jsonData = await response.json();
   console.log("aircraft fetched", jsonData.states[0]);
@@ -119,7 +120,7 @@ async function fetchAircraftOnIcao(icao24) {
 const globeRadius = 102;
 
 export async function fetchTrackOnIcao(icao24) {
-  const credentials = `${username}:${password}`;
+  /*   const credentials = `${username}:${password}`; */
   const encoder = new TextEncoder();
   const data = encoder.encode(credentials);
   const encodedCredentials = BASE64.fromByteArray(data);

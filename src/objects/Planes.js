@@ -9,7 +9,8 @@ import {
 } from "../features/cluster";
 import { continentsMap, continentsColorMap } from "../data/continentsMap";
 
-import { username, password } from "../../info";
+//Access by OpenSky Network
+/* import { username, password } from "../../info"; */
 
 import Aircraft from "./Aircraft";
 
@@ -551,14 +552,14 @@ export class RealtimeState extends State {
     });
 
     const fetchPlaneObjects = async () => {
-      const credentials = `${username}:${password}`;
+      /* const credentials = `${username}:${password}`;
       const encoder = new TextEncoder();
       const data = encoder.encode(credentials);
-      const encodedCredentials = base64.fromByteArray(data);
+      const encodedCredentials = base64.fromByteArray(data); */
       const response = await fetch(this.fetchURL, {
-        headers: {
+        /* headers: {
           Authorization: `Basic ${encodedCredentials}`,
-        },
+        }, */
       });
 
       const jsonData = await response.json();

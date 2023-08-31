@@ -3,7 +3,9 @@ import base64 from "base64-js";
 
 import { latLonToCart } from "../utility/latLngToCartSystem";
 
-import { username, password } from "../../info";
+//Access by OpenSky Network
+/* import { username, password } from "../../info"; */
+
 import Airport from "./Airport";
 
 export default class Airports extends THREE.Group {
@@ -44,16 +46,16 @@ export default class Airports extends THREE.Group {
   }
 
   async fetchAirports() {
-    const credentials = `${username}:${password}`;
+    /* const credentials = `${username}:${password}`; 
     const encoder = new TextEncoder();
     const data = encoder.encode(credentials);
-    const encodedCredentials = base64.fromByteArray(data);
+    const encodedCredentials = base64.fromByteArray(data); */
 
     const response = await fetch(this.fetchURL, {
       method: "GET",
-      headers: {
+      /*  headers: {
         Authorization: `Basic ${encodedCredentials}`,
-      },
+      }, */
     });
 
     const jsonData = await response.json();
