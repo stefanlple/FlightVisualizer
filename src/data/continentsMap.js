@@ -156,6 +156,9 @@ export const continentsMap = {
     "Namibia",
     "Ghana",
     "Mozambique",
+    "Equatorial Guinea",
+    "Guinea-Bissau",
+    "Central African Republic",
   ],
   Oceania: [
     "Australia",
