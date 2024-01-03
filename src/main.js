@@ -55,7 +55,7 @@ function mainRealTime() {
     window.renderer.domElement
   );
   orbitControls.target = new THREE.Vector3(0, 0, 0);
-  orbitControls.minDistance = 130;
+  orbitControls.minDistance = 122;
   orbitControls.maxDistance = 380;
   orbitControls.enablePan = false;
 
